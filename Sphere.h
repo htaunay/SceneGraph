@@ -1,6 +1,6 @@
 #include "Shape.h"
 
-class Sphere
+class Sphere : public Shape
 {
 public:
 	Sphere( float radius, int slices = 64, int stacks = 64 ):

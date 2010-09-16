@@ -6,13 +6,14 @@
 class Transform : public Group
 {
 public:
-	Transform();
-
 	virtual int setupCamera();
 
 	virtual int setupLights();
 
 	virtual void render();
+
+public:
+	Transform();
 
 	void translate( double x, double y, double z );
 
@@ -20,11 +21,9 @@ public:
 
 	void scale( double x, double y, double z );
 
-	double* loadIdentity();
-
 private:
-	double* _tMatrix;
-	double* _iMatrix;
+	double _tMatrix[16];
+	double _iMatrix[16];
 };
 
 #endif

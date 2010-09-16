@@ -5,6 +5,7 @@ PROJECT( SceneGraph )
 FILE( GLOB source_files *.cpp )
 FILE( GLOB header_files *.h )
 
+FIND_PACKAGE( GLU )
 FIND_PACKAGE( GLUT )
 FIND_PACKAGE( OpenGL )
 

@@ -1,9 +1,9 @@
-#ifndef _LIGHT_H_
-#define _LIGHT_H_
+#ifndef _POSITIONAL_LIGHT_H_
+#define _POSITIONAL_LIGHT_H_
 
-#include "Node.h"
+#include "Light.h"
 
-class Light : public Node
+class PositionalLight : public Light
 {
 public:
 	virtual inline int setupCamera() { return 1; }
@@ -13,7 +13,7 @@ public:
 	virtual inline void render() {;}
 
 public:
-	Light();
+	PositionalLight();
 
 	virtual void setAmbient( float r, float g, float b, float alpha );
 
@@ -21,10 +21,10 @@ public:
 
 	virtual void setSpecular( float r, float g, float b, float alpha );
 
-protected:
-	float _ambient[16];
-	float _diffuse[16];
-	float _specular[16];
+	void setPosition( float x, float y, float z );
+
+private:
+	float _position[16];
 };
 
 #endif

@@ -1,19 +1,16 @@
 #include "Light.h"
+#include "Utility.h"
 
 int Light::setupLights()
 {
-	GLenum lightID = GL_LIGHT0 + 0;
-	glEnable( lightID );
-	glLightfv( lightID, GL_POSITION, _position );
-	glLightfv( lightID, GL_AMBIENT,  _ambient );
-	glLightfv( lightID, GL_DIFFUSE,  _diffuse );
-	glLightfv( lightID, GL_SPECULAR, _specular );
 	return 1;
 }
 
 Light::Light()
 {
-	//TODO
+	Utility::initVectorf( _ambient, Utility::MATRIX_SIZE );
+	Utility::initVectorf( _diffuse, Utility::MATRIX_SIZE );
+	Utility::initVectorf( _specular, Utility::MATRIX_SIZE );
 }
 
 void Light::setAmbient( float r, float g, float b, float alpha )
@@ -38,12 +35,4 @@ void Light::setSpecular( float r, float g, float b, float alpha )
 	_specular[1] = g;
 	_specular[2] = b;
 	_specular[3] = alpha;
-}
-
-void Light::setPosition( float x, float y, float z )
-{
-	_position[0] = x;
-	_position[1] = y;
-	_position[2] = z;
-	_position[3] = 1;
 }

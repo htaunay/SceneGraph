@@ -1,28 +1,23 @@
 #include "Transform.h"
+#include "Utility.h"
 
-Transform::Transform()
+// Internal Methods
+void copyMatrix( double mSrc[], double mDest[] )
 {
-	glPushMatrix();
-	glLoadIdentity();
-	glGetDoublev( GL_MODELVIEW_MATRIX, _tMatrix );
-	// calc matriz inversa
-	glPopMatrix();
+	for( int i = 0; i < 16; i++ )
+		mDest[i] = mSrc[i];
 }
+
+// Class Methods
 
 int Transform::setupCamera()
 {
-	int r = Group::setupCamera();
-
-	if( r )
-		glMultMatrixd( _iMatrix );
-
-	return r;
+	Group::setupCamera();
 }
 
 int Transform::setupLights()
 {
-	//TODO
-	return 1;
+	Group::setupLights();
 }
 
 void Transform::render()
@@ -30,6 +25,15 @@ void Transform::render()
 	glPushMatrix();
 	glMultMatrixd( _tMatrix );
 	Group::render();
+	glPopMatrix();
+}
+
+Transform::Transform()
+{
+	glPushMatrix();
+	glLoadIdentity();
+	glGetDoublev( GL_MODELVIEW_MATRIX, _tMatrix );
+	Utility::copyVectord( _tMatrix, _iMatrix, Utility::MATRIX_SIZE );
 	glPopMatrix();
 }
 
@@ -49,24 +53,13 @@ void Transform::rotate( double angle, double x, double y, double z )
 	glRotated( angle, x, y, z );
 	glGetDoublev( GL_MODELVIEW_MATRIX, _tMatrix );
 	glPopMatrix();
-
-	glPushMatrix();
-	glLoadIdentity();
-	glRotated( -angle, x, y, z );
-	glMultMatrixd( _iMatrix );
-	glGetDoublev( GL_MODELVIEW_MATRIX, _iMatrix );
-	glPopMatrix();
 }
 
 void Transform::scale( double x, double y, double z )
 {
-	_tMatrix[0] *= x;
-	_tMatrix[1] *= y;
-	_tMatrix[2] *= z;
-}
-
-double* loadIdentity()
-{
-	//TODO
-	return 0;
+	glPushMatrix();
+	glLoadMatrixd( _tMatrix );
+	glScalef( x, y, z );
+	glGetDoublev( GL_MODELVIEW_MATRIX, _tMatrix );
+	glPopMatrix();
 }
