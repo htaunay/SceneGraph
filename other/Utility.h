@@ -1,16 +1,22 @@
 #ifndef _UTILITY_H_
 #define _UTILITY_H_
 
+#include "gl.h"
+
 class Utility
 {
 public:
-	static bool initVectorf( float *vec, int size );
+	static void initVectorf( float *vec, int size, int value = 0 );
 
-	static bool initVectord( double *vec, int size );
+	static void initVectord( double *vec, int size, int value = 0 );
 
-	static bool copyVectorf( float *src, float* dest, int size );
+	static void initVectorgf( GLfloat *vec, int size, int value = 0 );
 
-	static bool copyVectord( double *src, double* dest, int size );
+	static void copyVectorf( float *src, float* dest, int size );
+
+	static void copyVectord( double *src, double* dest, int size );
+
+	static void copyVectorgf( GLfloat *src, GLfloat* dest, int size );
 
 public:
 	static const int MATRIX_SIZE;

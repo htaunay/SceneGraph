@@ -2,25 +2,37 @@
 
 const int Utility::MATRIX_SIZE = 16;
 
-bool Utility::initVectorf( float *vec, int size )
+void Utility::initVectorf( float *vec, int size, int value )
 {
 	for( int i = 0; i < size; i++ )
-		vec[i] = 0;
+		vec[i] = value;
 }
 
-bool Utility::initVectord( double *vec, int size )
+void Utility::initVectord( double *vec, int size, int value )
 {
 	for( int i = 0; i < size; i++ )
-		vec[i] = 0;
+		vec[i] = value;
 }
 
-bool Utility::copyVectorf( float *src, float* dest, int size )
+void Utility::initVectorgf( GLfloat *vec, int size, int value )
+{
+	for( int i = 0; i < size; i++ )
+		vec[i] = value;
+}
+
+void Utility::copyVectorf( float *src, float* dest, int size )
 {
 	for( int i = 0; i < size; i++ )
 		dest[i] = src[i];
 }
 
-bool Utility::copyVectord( double *src, double* dest, int size )
+void Utility::copyVectord( double *src, double* dest, int size )
+{
+	for( int i = 0; i < size; i++ )
+		dest[i] = src[i];
+}
+
+void Utility::copyVectorgf( GLfloat *src, GLfloat* dest, int size )
 {
 	for( int i = 0; i < size; i++ )
 		dest[i] = src[i];

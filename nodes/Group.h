@@ -7,13 +7,14 @@
 class Group : public Node
 {
 public:
-	Group();
-
 	virtual int setupCamera();
 
 	virtual int setupLights();
 
 	virtual void render();
+
+public:
+	Group();
 
 	bool addNode( Node* newNode );
 

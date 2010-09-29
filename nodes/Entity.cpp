@@ -2,7 +2,8 @@
 
 Entity::Entity()
 {
-	//empty
+	_appearance = NULL;
+	_shape = NULL;
 }
 
 void Entity::render()

@@ -1,75 +1,101 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include "glu.h"
+#include "Utility.h"
 #include "Texture.h"
 
-GLuint loadTextureRAW( const char *filename, int wrap )
+Texture::Texture()
 {
-	GLuint texture;
-	int width, height;
-	char *data;
-	FILE * file;
+	generate_tex_coord = false;
+	image = NULL;
 
-	// open texture data
-	file = fopen( filename, "rb" );
-	if ( file == NULL ) return 0;
+	Utility::initVectorgf( material_color, 3, 1 );
+	material_color[3] = 0.0;
 
-	// allocate buffer
-	width = 256;
-	height = 256;
-	data = (char*) malloc( width * height * 3 );
-
-	// read texture data
-	fread( data, width * height * 3, 1, file );
-	fclose( file );
-
-	// allocate a texture name
-	glGenTextures( 1, &texture );
-
-	// select our current texture
-	glBindTexture( GL_TEXTURE_2D, texture );
-
-	// select modulate to mix texture with color for shading
-	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-	// when texture area is small, bilinear filter the closest mipmap
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-					 GL_LINEAR_MIPMAP_NEAREST );
-	// when texture area is large, bilinear filter the first mipmap
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
-	// if wrap is true, the texture wraps over at the edges (repeat)
-	//       ... false, the texture ends at the edges (clamp)
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-					 wrap ? GL_REPEAT : GL_CLAMP );
-	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-					 wrap ? GL_REPEAT : GL_CLAMP );
-
-	// build our texture mipmaps
-	gluBuild2DMipmaps( GL_TEXTURE_2D, 3, width, height,
-					   GL_RGB, GL_UNSIGNED_BYTE, data );
-
-	// free buffer
-	free( data );
-
-	return texture;
+	Utility::initVectorgf( border_color, 4 );
 }
 
-Texture::Texture( const char *filename )
+Texture::~Texture()
 {
-	_filename = filename;
+	glDeleteTextures(1, &id);
 }
 
-void Texture::load( void )
+void Texture::load()
 {
-	GLint type;
-	glEnable( GL_TEXTURE_2D );
-	_texture = loadTextureRAW( _filename, true );
+	glPushAttrib(GL_TEXTURE_BIT);
 
-	glColor3f(1.0f, 1.0f, 1.0f);
+	glBindTexture(GL_TEXTURE_2D, id);
+
+	glEnable(GL_TEXTURE_2D);
+	if(generate_tex_coord)
+	{
+		glEnable(GL_TEXTURE_GEN_S);
+		glEnable(GL_TEXTURE_GEN_T);
+
+		glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+		glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
+		glTexGenfv(GL_S, GL_OBJECT_PLANE, &s_gen_plane[0]);
+		glTexGenfv(GL_T, GL_OBJECT_PLANE, &t_gen_plane[0]);
+	}
+
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+	glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, (const GLfloat*)&material_color);
 }
 
-void Texture::unLoad( void )
+void Texture::unLoad()
 {
-	glDisable(GL_TEXTURE_2D);
+	glPopAttrib();
+}
+
+void Texture::SetGenerateTextureCoord(bool g)
+{
+	generate_tex_coord = g;
+}
+
+void Texture::SetTextureParameters( GLfloat* borderColor )
+{
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+}
+
+void Texture::SetPlanes( GLfloat *s_plane, GLfloat *t_plane )
+{
+	Utility::copyVectorgf( s_plane, s_gen_plane, 4 );
+	Utility::copyVectorgf( t_plane, t_gen_plane, 4 );
+}
+
+bool Texture::LoadImage( const int width, const int height, const char *filepath )
+{
+	// Checks if there is already an image loaded.
+	// The previously loaded image must be freed before the new image is loaded.
+	if( image != NULL )
+		return false;
+
+	image_width = width;
+	image_height = height;
+
+	FILE *img_file = fopen( filepath, "rb" );
+
+	if( !img_file )
+		return false;
+
+	const int img_size = image_width * image_height * 3;
+
+	image = new unsigned char[img_size];
+
+	if( !image )
+		return false;
+
+	fread( image, img_size, 1, img_file );
+
+	fclose( img_file );
+
+	glGenTextures(1, &id);
+	glBindTexture(GL_TEXTURE_2D, id);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+
+	return true;
 }

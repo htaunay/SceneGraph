@@ -4,6 +4,8 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "Sphere.h"
+#include "Environ.h"
+#include "Texture.h"
 #include "Cylinder.h"
 #include "Material.h"
 #include "Transform.h"
@@ -25,8 +27,8 @@ int main( int argc, char* argv[] )
 void generateScene()
 {
 	Scene *scene = Scene::getInstance();
-	Camera *camera = new Camera();
 
+	Camera *camera = new Camera();
 	camera->setZNear( 0.1 );
 	camera->setZFar( 100 );
 	camera->setFovy( 50);
@@ -36,13 +38,16 @@ void generateScene()
 	scene->addNode( camera );
 
 	PositionalLight *posLight = new PositionalLight();
-
 	posLight->setAmbient( 0.2, 0.2, 0.2, 1 );
 	posLight->setDiffuse( 0.2, 0.2, 0.2, 1 );
 	posLight->setSpecular( 0.2, 0.2, 0.2, 1 );
 	posLight->setPosition( 0, 8, 0 );
-
 	scene->addNode( posLight );
+
+	Environ *environ = new Environ();
+	environ->setFogDistance( 25.0, 100.0 );
+	scene->addNode( environ );
+	environ->enableFog();
 
 	/*DirectionalLight *dirLight = new DirectionalLight();
 
@@ -57,8 +62,8 @@ void generateScene()
 void generateTable()
 {
 	SpotLight *spotLight = new SpotLight();
-	spotLight->setAmbient( 0.0, 0.2, 0.0, 1 );
-	spotLight->setDiffuse( 0.2, 1, 0.2, 1 );
+	spotLight->setAmbient( 0.4, 0.4, 0.2, 1 );
+	spotLight->setDiffuse( 0.8, 0.8, 0.4, 1 );
 	spotLight->setCutOff( 90 );
 	spotLight->setExpoent( 32 );
 	spotLight->setupAttenuation( 1, 0, 0 );
@@ -75,6 +80,17 @@ void generateTable()
 	woodMaterial->setDiffuse( 0.545, 0.27, 0.0745, 1 );
 	woodMaterial->setSpecular( 0.1, 0.1, 0.1, 1 );
 	woodMaterial->setShineness( 0.1 );
+
+	/*Texture *floor_tex = new Texture();
+	floor_tex->LoadImage(128, 128, "data/floor.raw");
+	floor_tex->SetGenerateTextureCoord(true);
+	GLfloat bc[4];
+	bc[0] = 0.0; bc[1] = 1.0; bc[2] = 0.0; bc[3] = 1.0;
+	floor_tex->SetTextureParameters( bc );
+	GLfloat p1[4]; GLfloat p2[4];
+	p1[0] = 0.4; p1[1] = 0.0; p1[2] = 0.0; p1[3] = 0.0;
+	p2[0] = 0.0; p2[1] = 0.0; p2[2] = 0.4; p2[3] = 0.0;
+	floor_tex->SetPlanes( p1, p2 );*/
 
 	Material *ballMaterial = new Material();
 	ballMaterial->setAmbient( 0.698, 0.133, 0.133, 1 );

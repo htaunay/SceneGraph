@@ -1,6 +1,7 @@
 #ifndef _APPEARANCE_H_
 #define _APPEARANCE_H_
 
+
 class Appearance
 {
 public:

@@ -1,22 +1,47 @@
-#ifndef _TEXTURE_H_
-#define _TEXTURE_H_
+#ifndef _TEXTURE_H
+#define	_TEXTURE_H
 
 #include "gl.h"
 #include "Appearance.h"
 
 class Texture : public Appearance
 {
+private:
+
+	bool generate_tex_coord;
+
+	GLfloat material_color[4];
+
+	GLfloat border_color[4];
+
+	unsigned int id;
+
+	void* image;
+
+	int image_width;
+
+	int image_height;
+
+	GLfloat s_gen_plane[4];
+
+	GLfloat t_gen_plane[4];
+
 public:
-	virtual void load();
+	Texture();
 
-	virtual void unLoad();
+	virtual ~Texture();
 
-public:
-	Texture( const char *filename );
+	void load();
 
-protected:
-	GLuint _texture;
-	const char *_filename;
+	void unLoad();
+
+	bool LoadImage(const int width, const int height, const char *filepath);
+
+	void SetGenerateTextureCoord(bool g);
+
+	void SetTextureParameters( GLfloat* borderColor );
+
+	void SetPlanes( GLfloat *s_plane, GLfloat *t_plane);
 };
 
-#endif
+#endif	/* _TEXTURE_H */
