@@ -30,7 +30,8 @@ int Scene::setupCamera()
 int Scene::setupLights()
 {
 	glEnable(GL_LIGHTING);
-	glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+	//two sided
+	//glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 	Group::setupLights();
 	return 1;
 }

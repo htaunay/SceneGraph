@@ -1,7 +1,6 @@
 #include "SpotLight.h"
 #include "Utility.h"
 
-#include <stdio.h>
 
 int SpotLight::setupLights()
 {

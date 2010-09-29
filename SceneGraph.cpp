@@ -59,8 +59,8 @@ void generateTable()
 	SpotLight *spotLight = new SpotLight();
 	spotLight->setAmbient( 0.0, 0.2, 0.0, 1 );
 	spotLight->setDiffuse( 0.2, 1, 0.2, 1 );
-	spotLight->setCutOff( 60 );
-	spotLight->setExpoent( 16 );
+	spotLight->setCutOff( 90 );
+	spotLight->setExpoent( 32 );
 	spotLight->setupAttenuation( 1, 0, 0 );
 
 	Transform *table = new Transform();
@@ -117,35 +117,35 @@ void generateTable()
 
 	Entity *tableTopEntity = new Entity();
 	tableTopEntity->setShape( tableTopShape );
-	tableTopEntity->setMaterial( woodMaterial );
+	tableTopEntity->setAppearance( woodMaterial );
 
 	Entity *tableFootEntity = new Entity();
 	tableFootEntity->setShape( tableFootShape );
-	tableFootEntity->setMaterial( woodMaterial );
+	tableFootEntity->setAppearance( woodMaterial );
 
 	Entity *ballEntity = new Entity();
 	ballEntity->setShape( ballShape );
-	ballEntity->setMaterial( ballMaterial );
+	ballEntity->setAppearance( ballMaterial );
 
 	Entity *cupEntity = new Entity();
 	cupEntity->setShape( cupShape );
-	cupEntity->setMaterial( cupMaterial );
+	cupEntity->setAppearance( cupMaterial );
 
 	Entity *lampBaseEntity = new Entity();
 	lampBaseEntity->setShape( lampBaseShape );
-	lampBaseEntity->setMaterial( lampBaseMaterial );
+	lampBaseEntity->setAppearance( lampBaseMaterial );
 
 	Entity *lampHasteEntity = new Entity();
 	lampHasteEntity->setShape( lampHasteShape );
-	lampHasteEntity->setMaterial( lampBaseMaterial );
+	lampHasteEntity->setAppearance( lampBaseMaterial );
 
 	Entity *lampHeadEntity = new Entity();
 	lampHeadEntity->setShape( lampHeadShape );
-	lampHeadEntity->setMaterial( lampHeadMaterial );
+	lampHeadEntity->setAppearance( lampHeadMaterial );
 
 	Entity *lampBulbEntity = new Entity();
 	lampBulbEntity->setShape( lampBulbShape );
-	lampBulbEntity->setMaterial( lampBulbMaterial );
+	lampBulbEntity->setAppearance( lampBulbMaterial );
 
 	Transform *tableTop = new Transform();
 	tableBase->addNode( tableTop );
@@ -211,11 +211,9 @@ void generateTable()
 	lampBulb->addNode( lampBulbEntity );
 	lampHead->addNode( lampBulb );
 
-	//spotLight->setPosition( 1, 2.35, -1.4 );
-	//spotLight->setDirection( 0, 1, 1 );
-	spotLight->setPosition( 1, 4, -1.5 );
-	spotLight->setDirection( 0, -1, 1 );
-	lampHead->addNode( spotLight );
+	spotLight->setDirection( -0.2, 0.4, -1);
+	spotLight->setPosition( 0, 0, 0 );
+	lampBulb->addNode( spotLight );
 }
 
 static void redrawScene()
@@ -240,6 +238,8 @@ void showScene( int argc, char* argv[] )
 	glutCreateWindow( "SceneGraph" );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glutSwapBuffers();
+
+	//glPolygonMode(GL_FRONT,GL_LINE);
 
 	generateScene();
 	generateTable();
