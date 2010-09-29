@@ -20,6 +20,7 @@ set( CORELIBS  ${GLU_LIBRARY} ${GLUT_LIBRARY} ${OPENGL_LIBRARY} )
 
 INCLUDE_DIRECTORIES( 
 	${MAIN_DIR}/nodes
+	${MAIN_DIR}/nodes/lights
 	${MAIN_DIR}/other
 	${MAIN_DIR}/properties
 	${MAIN_DIR}/shapes
