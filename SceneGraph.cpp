@@ -1,4 +1,5 @@
 #include "Cube.h"
+#include "Mesh.h"
 #include "Group.h"
 #include "Scene.h"
 #include "Camera.h"
@@ -32,7 +33,7 @@ void generateScene()
 	camera->setZNear( 0.1 );
 	camera->setZFar( 100 );
 	camera->setFovy( 50);
-	camera->setEye( 10, 10, 10 );
+	camera->setEye( 8, 8, 8 );
 	camera->setCenter( 0, 0, 0 );
 	camera->setUp( 0, 1, 0 );
 	scene->addNode( camera );
@@ -122,6 +123,12 @@ void generateTable()
 	lampBulbMaterial->setSpecular( 0.8, 0.8, 0, 1 );
 	lampBulbMaterial->setShineness( 0.7 );
 
+	Material *bunnyMaterial = new Material();
+	bunnyMaterial->setAmbient( 0.8, 0.8, 0.4, 1 );
+	bunnyMaterial->setDiffuse( 0.8, 0.8, 0.4, 1 );
+	bunnyMaterial->setSpecular( 0.8, 0.8, 0.4, 1 );
+	bunnyMaterial->setShineness( 0.9 );
+
 	Cube *tableTopShape = new Cube( 6, 0.5, 8 );
 	Cube *tableFootShape = new Cube( 0.5, 4, 0.5 );
 	Sphere *ballShape = new Sphere( 0.5 );
@@ -130,6 +137,9 @@ void generateTable()
 	Cylinder *lampHasteShape = new Cylinder( 0.085, 0.085, 1.5 );
 	Cylinder *lampHeadShape = new Cylinder( 0.05, 0.4, 0.6, false );
 	Sphere *lampBulbShape = new Sphere( 0.15 );
+	Mesh *bunnyShape = new Mesh();
+	bunnyShape->loadGeometry( "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/bunny.msh" );
+	bunnyShape->setScale( 10, 10, 10 );
 
 	Entity *tableTopEntity = new Entity();
 	tableTopEntity->setShape( tableTopShape );
@@ -162,6 +172,10 @@ void generateTable()
 	Entity *lampBulbEntity = new Entity();
 	lampBulbEntity->setShape( lampBulbShape );
 	lampBulbEntity->setAppearance( lampBulbMaterial );
+
+	Entity *bunnyEntity = new Entity();
+	bunnyEntity->setShape( bunnyShape );
+	bunnyEntity->setAppearance( bunnyMaterial );
 
 	Transform *tableTop = new Transform();
 	tableBase->addNode( tableTop );
@@ -230,6 +244,11 @@ void generateTable()
 	spotLight->setDirection( -0.2, 0.4, -1);
 	spotLight->setPosition( 0, 0, 0 );
 	lampBulb->addNode( spotLight );
+
+	Transform *bunny = new Transform();
+	bunny->translate( 2.5, 0.75, 2.5 );
+	bunny->addNode( bunnyEntity );
+	table->addNode( bunny );
 }
 
 static void redrawScene()
@@ -255,7 +274,7 @@ void showScene( int argc, char* argv[] )
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glutSwapBuffers();
 
-	//glPolygonMode(GL_FRONT,GL_LINE);
+	//glPolygonMode(GL_FRONT,GL_FILL);
 
 	generateScene();
 	generateTable();

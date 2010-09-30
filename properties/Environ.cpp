@@ -7,7 +7,7 @@ Environ::Environ()
 	_fogEnd   = 0;
 	_fogMode  = GL_LINEAR;
 
-	Utility::initVectorf( _fogColor, 4, 1 );
+	Utility::initVectorf( _fogColor, 4 );
 }
 
 void Environ::setFogColor( float r, float g, float b, float a )
