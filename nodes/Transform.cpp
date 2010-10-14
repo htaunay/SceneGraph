@@ -42,6 +42,7 @@ void Transform::translate( double x, double y, double z )
 	glLoadMatrixd( _tMatrix );
 	glTranslated( x, y, z );
 	glGetDoublev( GL_MODELVIEW_MATRIX, _tMatrix );
+	glLoadIdentity();
 	glPopMatrix();
 }
 

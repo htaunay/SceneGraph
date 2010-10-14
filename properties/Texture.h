@@ -6,42 +6,37 @@
 
 class Texture : public Appearance
 {
-private:
+public:
+	virtual void load();
 
-	bool generate_tex_coord;
-
-	GLfloat material_color[4];
-
-	GLfloat border_color[4];
-
-	unsigned int id;
-
-	void* image;
-
-	int image_width;
-
-	int image_height;
-
-	GLfloat s_gen_plane[4];
-
-	GLfloat t_gen_plane[4];
+	virtual void unLoad();
 
 public:
 	Texture();
 
-	virtual ~Texture();
+	~Texture();
 
-	void load();
-
-	void unLoad();
-
-	bool LoadImage(const int width, const int height, const char *filepath);
+	bool LoadImage( const int width, const int height, const char *filepath );
 
 	void SetGenerateTextureCoord(bool g);
 
-	void SetTextureParameters( GLfloat* borderColor );
+	void SetTextureParameters( GLfloat* borderColor = NULL, GLfloat* materialColor = NULL );
 
 	void SetPlanes( GLfloat *s_plane, GLfloat *t_plane);
+
+private:
+	bool _generate_tex_coord;
+
+	GLfloat _material_color[4];
+	GLfloat _border_color[4];
+
+	unsigned int _id;
+	void *_image;
+	int _image_width;
+	int _image_height;
+
+	GLfloat _s_gen_plane[4];
+	GLfloat _t_gen_plane[4];
 };
 
-#endif	/* _TEXTURE_H */
+#endif

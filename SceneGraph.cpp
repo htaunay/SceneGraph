@@ -31,42 +31,40 @@ void generateScene()
 
 	Camera *camera = new Camera();
 	camera->setZNear( 0.1 );
-	camera->setZFar( 100 );
+	camera->setZFar( 50 );
 	camera->setFovy( 50);
 	camera->setEye( 8, 8, 8 );
 	camera->setCenter( 0, 0, 0 );
 	camera->setUp( 0, 1, 0 );
 	scene->addNode( camera );
 
-	PositionalLight *posLight = new PositionalLight();
+	/*PositionalLight *posLight = new PositionalLight();
 	posLight->setAmbient( 0.2, 0.2, 0.2, 1 );
-	posLight->setDiffuse( 0.2, 0.2, 0.2, 1 );
-	posLight->setSpecular( 0.2, 0.2, 0.2, 1 );
+	posLight->setDiffuse( 0.4, 0.4, 0.4, 1 );
+	posLight->setSpecular( 0.4, 0.4, 0.4, 1 );
 	posLight->setPosition( 0, 8, 0 );
-	scene->addNode( posLight );
+	scene->addNode( posLight );*/
 
 	Environ *environ = new Environ();
-	environ->setFogDistance( 25.0, 100.0 );
+	environ->setFogDistance( 25.0, 50.0 );
 	scene->addNode( environ );
 	environ->enableFog();
 
-	/*DirectionalLight *dirLight = new DirectionalLight();
-
+	DirectionalLight *dirLight = new DirectionalLight();
 	dirLight->setAmbient( 0.2, 0.2, 0.2, 1 );
 	dirLight->setDiffuse( 0.2, 0.2, 0.2, 1 );
 	dirLight->setSpecular( 0.2, 0.2, 0.2, 1 );
-	dirLight->setDirection( -1, 1, -1 );
-
-	scene->addNode( dirLight );*/
+	dirLight->setDirection( 0, 1, 1 );
+	scene->addNode( dirLight );
 }
 
 void generateTable()
 {
 	SpotLight *spotLight = new SpotLight();
-	spotLight->setAmbient( 0.4, 0.4, 0.2, 1 );
-	spotLight->setDiffuse( 0.8, 0.8, 0.4, 1 );
-	spotLight->setCutOff( 90 );
-	spotLight->setExpoent( 32 );
+	spotLight->setAmbient( 0.5, 0.5, 0.2, 1 );
+	spotLight->setDiffuse( 0.5, 0.5, 0.2, 1 );
+	spotLight->setCutOff( 45 );
+	spotLight->setExpoent( 60 );
 	spotLight->setupAttenuation( 1, 0, 0 );
 
 	Transform *table = new Transform();
@@ -76,22 +74,17 @@ void generateTable()
 	Group *tableBase = new Group();
 	table->addNode( tableBase );
 
-	Material *woodMaterial = new Material();
+	/*Material *woodMaterial = new Material();
 	woodMaterial->setAmbient( 0.545, 0.27, 0.0745, 1 );
 	woodMaterial->setDiffuse( 0.545, 0.27, 0.0745, 1 );
 	woodMaterial->setSpecular( 0.1, 0.1, 0.1, 1 );
-	woodMaterial->setShineness( 0.1 );
+	woodMaterial->setShineness( 0.1 );*/
 
-	/*Texture *floor_tex = new Texture();
-	floor_tex->LoadImage(128, 128, "data/floor.raw");
-	floor_tex->SetGenerateTextureCoord(true);
-	GLfloat bc[4];
-	bc[0] = 0.0; bc[1] = 1.0; bc[2] = 0.0; bc[3] = 1.0;
-	floor_tex->SetTextureParameters( bc );
-	GLfloat p1[4]; GLfloat p2[4];
-	p1[0] = 0.4; p1[1] = 0.0; p1[2] = 0.0; p1[3] = 0.0;
-	p2[0] = 0.0; p2[1] = 0.0; p2[2] = 0.4; p2[3] = 0.0;
-	floor_tex->SetPlanes( p1, p2 );*/
+	Texture *floor_tex = new Texture();
+	if( !floor_tex->LoadImage( 128, 128, "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/floor.raw" ) )
+		exit(0);
+	floor_tex->SetGenerateTextureCoord( true );
+	floor_tex->SetTextureParameters();
 
 	Material *ballMaterial = new Material();
 	ballMaterial->setAmbient( 0.698, 0.133, 0.133, 1 );
@@ -124,12 +117,12 @@ void generateTable()
 	lampBulbMaterial->setShineness( 0.7 );
 
 	Material *bunnyMaterial = new Material();
-	bunnyMaterial->setAmbient( 0.8, 0.8, 0.4, 1 );
-	bunnyMaterial->setDiffuse( 0.8, 0.8, 0.4, 1 );
-	bunnyMaterial->setSpecular( 0.8, 0.8, 0.4, 1 );
-	bunnyMaterial->setShineness( 0.9 );
+	bunnyMaterial->setAmbient( 1, 1, 1, 1 );
+	bunnyMaterial->setDiffuse( 1, 1, 1, 1 );
+	bunnyMaterial->setSpecular( 1, 1, 1, 1 );
+	bunnyMaterial->setShineness( 1 );
 
-	Cube *tableTopShape = new Cube( 6, 0.5, 8 );
+	Cube *tableTopShape = new Cube( 6, 0.5, 10 );
 	Cube *tableFootShape = new Cube( 0.5, 4, 0.5 );
 	Sphere *ballShape = new Sphere( 0.5 );
 	Cylinder *cupShape = new Cylinder( 0.2, 0.2, 0.4 );
@@ -139,15 +132,15 @@ void generateTable()
 	Sphere *lampBulbShape = new Sphere( 0.15 );
 	Mesh *bunnyShape = new Mesh();
 	bunnyShape->loadGeometry( "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/bunny.msh" );
-	bunnyShape->setScale( 10, 10, 10 );
+	bunnyShape->scale( 1.5, 1.5, 1.5 );
 
 	Entity *tableTopEntity = new Entity();
 	tableTopEntity->setShape( tableTopShape );
-	tableTopEntity->setAppearance( woodMaterial );
+	tableTopEntity->setAppearance( floor_tex );
 
 	Entity *tableFootEntity = new Entity();
 	tableFootEntity->setShape( tableFootShape );
-	tableFootEntity->setAppearance( woodMaterial );
+	tableFootEntity->setAppearance( floor_tex );
 
 	Entity *ballEntity = new Entity();
 	ballEntity->setShape( ballShape );
@@ -182,22 +175,22 @@ void generateTable()
 	tableTop->addNode( tableTopEntity );
 
 	Transform *tableFoot1 = new Transform();
-	tableFoot1->translate( -2.75, -2.25, -3.75 );
+	tableFoot1->translate( -2.75, -2.25, -4.75 );
 	tableFoot1->addNode( tableFootEntity );
 	tableBase->addNode( tableFoot1 );
 
 	Transform *tableFoot2 = new Transform();
-	tableFoot2->translate( -2.75, -2.25, 3.75 );
+	tableFoot2->translate( -2.75, -2.25, 4.75 );
 	tableFoot2->addNode( tableFootEntity );
 	tableBase->addNode( tableFoot2 );
 
 	Transform *tableFoot3 = new Transform();
-	tableFoot3->translate( 2.75, -2.25, -3.75 );
+	tableFoot3->translate( 2.75, -2.25, -4.75 );
 	tableFoot3->addNode( tableFootEntity );
 	tableBase->addNode( tableFoot3 );
 
 	Transform *tableFoot4 = new Transform();
-	tableFoot4->translate( 2.75, -2.25, 3.75 );
+	tableFoot4->translate( 2.75, -2.25, 4.75 );
 	tableFoot4->addNode( tableFootEntity );
 	tableBase->addNode( tableFoot4 );
 
@@ -207,13 +200,13 @@ void generateTable()
 	table->addNode( ball );
 
 	Transform *cup = new Transform();
-	cup->translate( -1.5, 0.75, -2 );
+	cup->translate( -1.5, 0.25, -2 );
 	cup->rotate( -90, 1, 0, 0 );
 	cup->addNode( cupEntity );
 	table->addNode( cup );
 
 	Transform *lampBase = new Transform();
-	lampBase->translate( 1.5, 0.75, -1.5 );
+	lampBase->translate( 1.5, 0.25, -1.5 );
 	lampBase->addNode( lampBaseEntity );
 	lampBase->rotate( -90, 1, 0, 0 );
 	table->addNode( lampBase );
@@ -241,19 +234,20 @@ void generateTable()
 	lampBulb->addNode( lampBulbEntity );
 	lampHead->addNode( lampBulb );
 
-	spotLight->setDirection( -0.2, 0.4, -1);
+	spotLight->setDirection( 0, 0, -1);
 	spotLight->setPosition( 0, 0, 0 );
 	lampBulb->addNode( spotLight );
 
 	Transform *bunny = new Transform();
-	bunny->translate( 2.5, 0.75, 2.5 );
+	bunny->translate( 0.8, 0.2, 1.5 );
 	bunny->addNode( bunnyEntity );
 	table->addNode( bunny );
 }
 
 static void redrawScene()
 {
-	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST | GL_LINE_SMOOTH );
+	glHint( GL_POLYGON_SMOOTH_HINT, GL_NICEST );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
 	Scene* scene = Scene::getInstance();
@@ -269,12 +263,12 @@ void showScene( int argc, char* argv[] )
 {
 	glutInit( &argc, argv );
 	glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );
-	glutInitWindowSize( 640, 480 );
+	glutInitWindowSize( 1200, 675 );
 	glutCreateWindow( "SceneGraph" );
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glutSwapBuffers();
 
-	//glPolygonMode(GL_FRONT,GL_FILL);
+        glPolygonMode(GL_FRONT,GL_FILL);
 
 	generateScene();
 	generateTable();

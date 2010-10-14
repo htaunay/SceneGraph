@@ -1,16 +1,21 @@
 #include "Camera.h"
+#include <stdio.h>
 
 int Camera::setupCamera()
 {
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
-	gluPerspective( _fovy, 16/9, _znear, _zfar );
+	gluPerspective( _fovy, 16.0/9.0, _znear, _zfar );
 
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
 	gluLookAt( _eye[0],		_eye[1],	_eye[2],
 			   _center[0],	_center[1], _center[2],
 			   _up[0],		_up[1],		_up[2] );
+
+	_manipulator->setCenter( _center );
+	_manipulator->setOrigin( _eye );
+	_manipulator->load();
 
 	return 1;
 }
@@ -24,6 +29,8 @@ Camera::Camera()
 	_fovy  = 0;
 	_znear = 0;
 	_zfar  = 0;
+	
+	_manipulator = Manipulator::getInstance();
 }
 
 void Camera::setEye( double x, double y, double z )

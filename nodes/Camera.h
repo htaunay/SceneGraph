@@ -2,6 +2,7 @@
 #define _CAMERA_H_
 
 #include "Node.h"
+#include "Manipulator.h"
 
 class Camera : public Node
 {
@@ -35,6 +36,8 @@ private:
 	double _fovy;
 	double _znear;
 	double _zfar;
+
+	Manipulator *_manipulator;
 };
 
 #endif
