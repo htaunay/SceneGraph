@@ -61,10 +61,10 @@ void generateScene()
 void generateTable()
 {
 	SpotLight *spotLight = new SpotLight();
-	spotLight->setAmbient( 0.5, 0.5, 0.2, 1 );
-	spotLight->setDiffuse( 0.5, 0.5, 0.2, 1 );
-	spotLight->setCutOff( 45 );
-	spotLight->setExpoent( 60 );
+	spotLight->setAmbient( 0.8, 0.8, 0.2, 1 );
+	spotLight->setDiffuse( 0.8, 0.8, 0.2, 1 );
+	spotLight->setCutOff( 60 );
+	spotLight->setExpoent( 64 );
 	spotLight->setupAttenuation( 1, 0, 0 );
 
 	Transform *table = new Transform();

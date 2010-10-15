@@ -4,49 +4,35 @@
 
 int SpotLight::setupLights()
 {
-	GLenum lightID = GL_LIGHT2;
-	glEnable( lightID );
-	glLightfv( lightID, GL_AMBIENT,  _ambient );
-	glLightfv( lightID, GL_DIFFUSE,  _diffuse );
-	glLightfv( lightID, GL_SPECULAR, _specular );
+	glEnable( _lightID );
+	glLightfv( _lightID, GL_AMBIENT,  _ambient );
+	glLightfv( _lightID, GL_DIFFUSE,  _diffuse );
+	glLightfv( _lightID, GL_SPECULAR, _specular );
 
-	glLightfv( lightID, GL_POSITION,			  _position );
-	glLightfv( lightID, GL_SPOT_DIRECTION,		  _direction );
-	glLightf(  lightID, GL_SPOT_CUTOFF,			  _cutOff );
-	glLightf(  lightID, GL_SPOT_EXPONENT,		  _expoent );
-	glLightf(  lightID, GL_CONSTANT_ATTENUATION,  _constantAtt );
-	glLightf(  lightID, GL_LINEAR_ATTENUATION,	  _linearAtt );
-	glLightf(  lightID, GL_QUADRATIC_ATTENUATION, _quadAtt );
+	glLightfv( _lightID, GL_POSITION,			   _position );
+	glLightfv( _lightID, GL_SPOT_DIRECTION,		   _direction );
+	glLightf(  _lightID, GL_SPOT_CUTOFF,		   _cutOff );
+	glLightf(  _lightID, GL_SPOT_EXPONENT,		   _expoent );
+	glLightf(  _lightID, GL_CONSTANT_ATTENUATION,  _constantAtt );
+	glLightf(  _lightID, GL_LINEAR_ATTENUATION,	   _linearAtt );
+	glLightf(  _lightID, GL_QUADRATIC_ATTENUATION, _quadAtt );
 
 	return 1;
 }
 
 SpotLight::SpotLight()
 {
+	_lightID = GL_LIGHT2;
+
+	Utility::initVectorf( _direction, 3 );
 	Utility::initVectorf( _position, 3 );
 	_position[3] = 1;
 
-	Utility::initVectorf( _direction, 3 );
 	_cutOff		 = 90.0f;
 	_expoent     = 64.0f;
 	_constantAtt = 1.0f;
 	_linearAtt   = 0.0f;
 	_quadAtt	 = 0.0f;
-}
-
-void SpotLight::setAmbient( float r, float g, float b, float alpha )
-{
-	Light::setAmbient( r, g, b, alpha );
-}
-
-void SpotLight::setDiffuse( float r, float g, float b, float alpha )
-{
-	Light::setDiffuse( r, g, b, alpha );
-}
-
-void SpotLight::setSpecular( float r, float g, float b, float alpha )
-{
-	Light::setSpecular( r, g, b, alpha );
 }
 
 void SpotLight::setPosition( float x, float y, float z )

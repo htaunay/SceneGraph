@@ -20,6 +20,7 @@ public:
 
 public:
 	static const int MATRIX_SIZE;
+	static const int VECTOR_SIZE;
 };
 
 #endif

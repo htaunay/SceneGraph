@@ -32,9 +32,7 @@ Texture::Texture()
 	_generate_tex_coord = false;
 	_image = NULL;
 
-	Utility::initVectorgf( _material_color, 3, 1 );
-	_material_color[3] = 0.0;
-
+	Utility::initVectorgf( _material_color, 3 );
 	Utility::initVectorgf( _border_color, 4 );
 }
 

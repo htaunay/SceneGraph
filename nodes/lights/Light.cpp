@@ -1,16 +1,11 @@
 #include "Light.h"
 #include "Utility.h"
 
-int Light::setupLights()
-{
-	return 1;
-}
-
 Light::Light()
 {
-	Utility::initVectorf( _ambient, Utility::MATRIX_SIZE );
-	Utility::initVectorf( _diffuse, Utility::MATRIX_SIZE );
-	Utility::initVectorf( _specular, Utility::MATRIX_SIZE );
+	Utility::initVectorf( _ambient,  Utility::VECTOR_SIZE );
+	Utility::initVectorf( _diffuse,  Utility::VECTOR_SIZE );
+	Utility::initVectorf( _specular, Utility::VECTOR_SIZE );
 }
 
 void Light::setAmbient( float r, float g, float b, float alpha )

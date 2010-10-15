@@ -1,6 +1,7 @@
 #include "Utility.h"
 
 const int Utility::MATRIX_SIZE = 16;
+const int Utility::VECTOR_SIZE = 4;
 
 void Utility::initVectorf( float *vec, int size, int value )
 {
