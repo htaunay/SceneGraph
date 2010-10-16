@@ -1,3 +1,9 @@
+/*
+  SceneGraph - 2010, PUC-Rio
+  Student/Developer: Henrique d'Escragnolle-Taunay
+  Teacher: Waldemar Celes
+ */
+
 #include "Cube.h"
 #include "Mesh.h"
 #include "Group.h"
@@ -132,7 +138,6 @@ void generateTable()
 	Sphere *lampBulbShape = new Sphere( 0.15 );
 	Mesh *bunnyShape = new Mesh();
 	bunnyShape->loadGeometry( "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/bunny.msh" );
-	bunnyShape->scale( 1.5, 1.5, 1.5 );
 
 	Entity *tableTopEntity = new Entity();
 	tableTopEntity->setShape( tableTopShape );
@@ -240,6 +245,7 @@ void generateTable()
 
 	Transform *bunny = new Transform();
 	bunny->translate( 0.8, 0.2, 1.5 );
+	bunny->scale( 1.5, 1.5, 1.5 );
 	bunny->addNode( bunnyEntity );
 	table->addNode( bunny );
 }
@@ -268,7 +274,7 @@ void showScene( int argc, char* argv[] )
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glutSwapBuffers();
 
-        glPolygonMode(GL_FRONT,GL_FILL);
+	glPolygonMode(GL_FRONT,GL_FILL);
 
 	generateScene();
 	generateTable();

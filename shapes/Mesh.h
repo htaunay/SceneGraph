@@ -1,8 +1,14 @@
+/*
+  SceneGraph - 2010, PUC-Rio
+  Student/Developer: Henrique d'Escragnolle-Taunay
+  Teacher: Waldemar Celes
+ */
+
 #ifndef _MESH_H_
 #define _MESH_H_
 
 #include "Shape.h"
-#include "Vector.h"
+#include "VVector.h"
 
 class Mesh : public Shape
 {

@@ -1,3 +1,9 @@
+/*
+  SceneGraph - 2010, PUC-Rio
+  Student/Developer: Henrique d'Escragnolle-Taunay
+  Teacher: Waldemar Celes
+ */
+
 #include "PositionalLight.h"
 #include "Utility.h"
 
@@ -14,7 +20,7 @@ int PositionalLight::setupLights()
 PositionalLight::PositionalLight()
 {
 	_lightID = GL_LIGHT0;
-	Utility::initVectorf( _position, 4 );
+	Utility::initVectorf( _position, Utility::VECTOR_SIZE );
 }
 
 void PositionalLight::setPosition( float x, float y, float z )

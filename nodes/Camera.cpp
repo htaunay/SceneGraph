@@ -1,11 +1,21 @@
+/*
+  SceneGraph - 2010, PUC-Rio
+  Student/Developer: Henrique d'Escragnolle-Taunay
+  Teacher: Waldemar Celes
+ */
+
 #include "Camera.h"
 #include <stdio.h>
 
+// Default aspect ratio value, considering there will be no window resizing.
+static const float ASPECT_RATIO = 16.0/9.0;
+
 int Camera::setupCamera()
 {
+	// Configures/updates the camera's state.
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
-	gluPerspective( _fovy, 16.0/9.0, _znear, _zfar );
+	gluPerspective( _fovy, ASPECT_RATIO, _znear, _zfar );
 
 	glMatrixMode( GL_MODELVIEW );
 	glLoadIdentity();
@@ -13,6 +23,7 @@ int Camera::setupCamera()
 			   _center[0],	_center[1], _center[2],
 			   _up[0],		_up[1],		_up[2] );
 
+	// Update's the manipulator object.
 	_manipulator->setCenter( _center );
 	_manipulator->setOrigin( _eye );
 	_manipulator->load();

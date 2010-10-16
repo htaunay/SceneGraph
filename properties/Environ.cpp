@@ -1,3 +1,9 @@
+/*
+  SceneGraph - 2010, PUC-Rio
+  Student/Developer: Henrique d'Escragnolle-Taunay
+  Teacher: Waldemar Celes
+ */
+
 #include "Environ.h"
 #include "Utility.h"
 
@@ -22,11 +28,6 @@ void Environ::setFogDistance( float fogStart, float fogEnd )
 {
 	_fogStart = fogStart;
 	_fogEnd   = fogEnd;
-}
-
-void Environ::setFogMode( GLenum fogMode )
-{
-	_fogMode = fogMode;
 }
 
 void Environ::enableFog()

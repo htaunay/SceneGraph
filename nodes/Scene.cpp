@@ -1,3 +1,9 @@
+/*
+  SceneGraph - 2010, PUC-Rio
+  Student/Developer: Henrique d'Escragnolle-Taunay
+  Teacher: Waldemar Celes
+ */
+
 #include "Scene.h"
 
 Scene* Scene::_instance = NULL;
@@ -8,11 +14,6 @@ Scene* Scene::getInstance()
 		_instance = new Scene();
 
 	return _instance;
-}
-
-Scene::Scene()
-{
-	//empty
 }
 
 Scene::~Scene()
@@ -29,7 +30,7 @@ int Scene::setupCamera()
 
 int Scene::setupLights()
 {
-	glEnable(GL_LIGHTING);
+	glEnable( GL_LIGHTING );
 	Group::setupLights();
 	return 1;
 }

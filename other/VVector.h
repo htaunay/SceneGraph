@@ -3,6 +3,8 @@
 // W. Celes - celes@inf.puc-rio.br
 // PUC-Rio, Jan 2008
 
+// Class provided by Prof. Waldemar Celes for Vector manipulation.
+
 #ifndef V_VECTOR_H
 #define V_VECTOR_H
 

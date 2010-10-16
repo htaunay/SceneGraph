@@ -11,18 +11,12 @@
 
 /*!
   Father class for all specific Light implementations. This virtual class should
-  not be used directly.
+  not be used directly (actually, it shouldn't even compile).
   Light only set's the main OpenGL attributes (ambient, diffuse, specular), and
   inherits the Node object's basic functions.
  */
 class Light : public Node
 {
-public:
-	// Methods inherited by Node object. No changes.
-	virtual inline void render() {;}
-	virtual int setupLights() { return 1; }
-	virtual inline int setupCamera() { return 1; }
-
 public:
 	//! Constructor that initializes all of Light's attributes.
 	Light();

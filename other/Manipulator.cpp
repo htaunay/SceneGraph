@@ -3,8 +3,9 @@
 // W. Celes - celes@inf.puc-rio.br
 // PUC-Rio, Set 2010
 
+// Class provided by Prof. Waldemar Celes for camera manipulation.
+
 #include "Manipulator.h"
-#include "Vector.h"
 
 #include "glut.h"
 
@@ -15,7 +16,9 @@
 #define PI 3.1459
 #define TORAD(x) (x*180.0f/PI)
 
-Manipulator* Manipulator::_current = 0;
+Manipulator* Manipulator::_instance = 0;
+
+/*** Static internal methods ***/
 
 // internal control
 static char g_state = ' ';
@@ -83,6 +86,9 @@ static void keyboard( unsigned char key, int x, int y )
 	else if( key == 'd' )
 		Manipulator::getInstance()->translate( -0.1, 0, 0 );
 
+	if( key == 'l' )
+		Manipulator::getInstance()->setWireframe();
+
 	glutPostRedisplay();
 }
 
@@ -116,26 +122,14 @@ static void motion( int x, int y )
 	}
 }
 
-void Manipulator::setCurrent( Manipulator* manip )
-{
-	_current = manip;
-}
+/*** Class methods ***/
 
 Manipulator* Manipulator::getInstance()
 {
-	if( _current == NULL )
-		_current = new Manipulator();
-	else
-		return _current;
-}
+	if( _instance == NULL )
+		_instance = new Manipulator();
 
-Manipulator::Manipulator()
-{
-	identity();
-	glutMouseFunc(mouse);
-	glutKeyboardFunc(keyboard);
-	glutMotionFunc(motion);
-	setCurrent(this);
+	return _instance;
 }
 
 void Manipulator::setCenter( double *center )
@@ -152,13 +146,20 @@ void Manipulator::setOrigin( double *origin )
 	_origin.z = origin[2];
 }
 
+void Manipulator::load()
+{
+	glTranslatef( 0.0f, 0.0f, -_center.y );
+	glMultMatrixf( _matrix );
+	glTranslatef( 0.0f, 0.0f, _center.y );
+}
+
 void Manipulator::identity()
 {
-	glPushAttrib(GL_TRANSFORM_BIT);
-	glMatrixMode(GL_MODELVIEW);
+	glPushAttrib( GL_TRANSFORM_BIT );
+	glMatrixMode( GL_MODELVIEW );
 	glPushMatrix();
 	glLoadIdentity();
-	glGetFloatv(GL_MODELVIEW_MATRIX, _matrix);
+	glGetFloatv( GL_MODELVIEW_MATRIX, _matrix );
 	glPopMatrix();
 	glPopAttrib();
 }
@@ -191,24 +192,33 @@ void Manipulator::scale( float sx, float sy, float sz )
 
 void Manipulator::translate( float tx, float ty, float tz )
 {
-	float nx = _center.x - _origin.x;
-	float nz = _center.z - _origin.z;
-	float hip = sqrt( nx*nx + nz*nz );
-	float cos = nz/hip;
-	float radians = cos * 90;
-
 	glPushMatrix();
 	glLoadMatrixf( _matrix );
-	glRotatef( -radians, 0, 1, 0 );
 	glTranslatef( tx, ty, tz );
-	glRotatef( radians, 0, 1, 0 );
 	glGetFloatv( GL_MODELVIEW_MATRIX, _matrix );
 	glPopMatrix();
 }
 
-void Manipulator::load()
+void Manipulator::setWireframe()
 {
-	glTranslatef(0.0f, 0.0f, -_center.y );
-	glMultMatrixf( _matrix);
-	glTranslatef(0.0f, 0.0f, _center.y );
+	if( _wireframe )
+	{
+		_wireframe = false;
+		glPolygonMode( GL_FRONT,GL_FILL );
+	}
+	else
+	{
+		_wireframe = true;
+		glPolygonMode( GL_FRONT,GL_LINE );
+	}
+}
+
+Manipulator::Manipulator()
+{
+	_wireframe = false;
+
+	identity();
+	glutMouseFunc(mouse);
+	glutKeyboardFunc(keyboard);
+	glutMotionFunc(motion);
 }

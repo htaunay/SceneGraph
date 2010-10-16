@@ -1,7 +1,12 @@
+/*
+  SceneGraph - 2010, PUC-Rio
+  Student/Developer: Henrique d'Escragnolle-Taunay
+  Teacher: Waldemar Celes
+ */
+
 #include "gl.h"
 #include <stdlib.h>
 
-#include "Vector.h"
 #include "Mesh.h"
 
 void Mesh::draw()

@@ -1,7 +1,11 @@
+/*
+  SceneGraph - 2010, PUC-Rio
+  Student/Developer: Henrique d'Escragnolle-Taunay
+  Teacher: Waldemar Celes
+ */
+
 #include "Transform.h"
 #include "Utility.h"
-
-// Class Methods
 
 int Transform::setupCamera()
 {

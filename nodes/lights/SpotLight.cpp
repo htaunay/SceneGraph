@@ -1,3 +1,9 @@
+/*
+  SceneGraph - 2010, PUC-Rio
+  Student/Developer: Henrique d'Escragnolle-Taunay
+  Teacher: Waldemar Celes
+ */
+
 #include "SpotLight.h"
 #include "Utility.h"
 
@@ -25,7 +31,7 @@ SpotLight::SpotLight()
 	_lightID = GL_LIGHT2;
 
 	Utility::initVectorf( _direction, 3 );
-	Utility::initVectorf( _position, 3 );
+	Utility::initVectorf( _position, Utility::VECTOR_SIZE );
 	_position[3] = 1;
 
 	_cutOff		 = 90.0f;
