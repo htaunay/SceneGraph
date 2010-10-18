@@ -6,17 +6,7 @@
 
 #include "Cylinder.h"
 #include "Utility.h"
-
-Cylinder::Cylinder( double baseRadius, double topRadius, double height,
-					bool closed, int slices, int stacks )
-{
-	_baseRadius = baseRadius;
-	_topRadius	= topRadius;
-	_height		= height;
-	_closed		= closed;
-	_slices		= slices;
-	_stacks		= stacks;
-}
+#include "glut.h"
 
 void Cylinder::draw()
 {
@@ -25,12 +15,13 @@ void Cylinder::draw()
 
 	glPushMatrix();
 
+	// Draws the solid cylinder
 	GLUquadric *cyQuad = gluNewQuadric();
 	gluCylinder( cyQuad, _topRadius, _baseRadius, _height, _slices, _stacks );
 
 	if( _closed )
 	{
-		//TODO
+		// Draws the cylinder's top
 		glPushMatrix();
 
 		glRotated( 180, 1, 0, 0 );
@@ -41,7 +32,7 @@ void Cylinder::draw()
 
 		glPopMatrix();
 
-		//TODO
+		// Draws the cylinder's bottom
 		glPushMatrix();
 
 		glTranslated( 0, 0, _height );
@@ -54,4 +45,15 @@ void Cylinder::draw()
 	}
 
 	glPopMatrix();
+}
+
+Cylinder::Cylinder( double baseRadius, double topRadius, double height,
+					bool closed, int slices, int stacks )
+{
+	_baseRadius = baseRadius;
+	_topRadius	= topRadius;
+	_height		= height;
+	_closed		= closed;
+	_slices		= slices;
+	_stacks		= stacks;
 }

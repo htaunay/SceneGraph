@@ -11,6 +11,7 @@
 #include "Camera.h"
 #include "Entity.h"
 #include "Sphere.h"
+#include "Utility.h"
 #include "Environ.h"
 #include "Texture.h"
 #include "Cylinder.h"
@@ -73,24 +74,13 @@ void generateTable()
 	spotLight->setExpoent( 64 );
 	spotLight->setupAttenuation( 1, 0, 0 );
 
-	Transform *table = new Transform();
-	table->translate( 0, 2, 0 );
-	Scene::getInstance()->addNode( table );
+	Texture *tableTexture = new Texture();
+	tableTexture->loadImage( "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/wood.bmp" );
+	tableTexture->setTextGenParameters();
 
-	Group *tableBase = new Group();
-	table->addNode( tableBase );
-
-	/*Material *woodMaterial = new Material();
-	woodMaterial->setAmbient( 0.545, 0.27, 0.0745, 1 );
-	woodMaterial->setDiffuse( 0.545, 0.27, 0.0745, 1 );
-	woodMaterial->setSpecular( 0.1, 0.1, 0.1, 1 );
-	woodMaterial->setShineness( 0.1 );*/
-
-	Texture *floor_tex = new Texture();
-	if( !floor_tex->LoadImage( 128, 128, "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/floor.raw" ) )
-		exit(0);
-	floor_tex->SetGenerateTextureCoord( true );
-	floor_tex->SetTextureParameters();
+	Texture *floorTexture = new Texture();
+	floorTexture->loadImage( "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/bricks.bmp" );
+	floorTexture->setTextGenParameters();
 
 	Material *ballMaterial = new Material();
 	ballMaterial->setAmbient( 0.698, 0.133, 0.133, 1 );
@@ -130,6 +120,7 @@ void generateTable()
 
 	Cube *tableTopShape = new Cube( 6, 0.5, 10 );
 	Cube *tableFootShape = new Cube( 0.5, 4, 0.5 );
+	Cube *floorShape = new Cube( 10, 0.05, 14 );
 	Sphere *ballShape = new Sphere( 0.5 );
 	Cylinder *cupShape = new Cylinder( 0.2, 0.2, 0.4 );
 	Cylinder *lampBaseShape = new Cylinder( 0.75, 0.75, 0.2 );
@@ -141,11 +132,15 @@ void generateTable()
 
 	Entity *tableTopEntity = new Entity();
 	tableTopEntity->setShape( tableTopShape );
-	tableTopEntity->setAppearance( floor_tex );
+	tableTopEntity->setAppearance( tableTexture );
 
 	Entity *tableFootEntity = new Entity();
 	tableFootEntity->setShape( tableFootShape );
-	tableFootEntity->setAppearance( floor_tex );
+	tableFootEntity->setAppearance( tableTexture );
+
+	Entity *floorEntity = new Entity();
+	floorEntity->setShape( floorShape );
+	floorEntity->setAppearance( floorTexture );
 
 	Entity *ballEntity = new Entity();
 	ballEntity->setShape( ballShape );
@@ -175,6 +170,13 @@ void generateTable()
 	bunnyEntity->setShape( bunnyShape );
 	bunnyEntity->setAppearance( bunnyMaterial );
 
+	Transform *table = new Transform();
+	table->translate( 0, 2, 0 );
+	Scene::getInstance()->addNode( table );
+
+	Group *tableBase = new Group();
+	table->addNode( tableBase );
+
 	Transform *tableTop = new Transform();
 	tableBase->addNode( tableTop );
 	tableTop->addNode( tableTopEntity );
@@ -198,6 +200,11 @@ void generateTable()
 	tableFoot4->translate( 2.75, -2.25, 4.75 );
 	tableFoot4->addNode( tableFootEntity );
 	tableBase->addNode( tableFoot4 );
+
+	Transform *floor = new Transform();
+	floor->translate( 0, -4.25, 0 );
+	floor->addNode( floorEntity );
+	table->addNode( floor );
 
 	Transform *ball = new Transform();
 	ball->translate( -1.5, 0.75, 2 );

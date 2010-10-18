@@ -5,15 +5,16 @@
  */
 
 #include "Material.h"
-#include "glut.h"
+#include "gl.h"
+#include "Utility.h"
 
 void Material::load()
 {
 	glPushAttrib( GL_LIGHTING_BIT );
-	glMaterialfv( GL_FRONT, GL_AMBIENT, _ambient );
-	glMaterialfv( GL_FRONT, GL_DIFFUSE, _diffuse );
-	glMaterialfv( GL_FRONT, GL_SPECULAR, _specular );
-	glMaterialf( GL_FRONT, GL_SHININESS, _shineness );
+	glMaterialfv( GL_FRONT, GL_AMBIENT,   _ambient );
+	glMaterialfv( GL_FRONT, GL_DIFFUSE,   _diffuse );
+	glMaterialfv( GL_FRONT, GL_SPECULAR,  _specular );
+	glMaterialf(  GL_FRONT, GL_SHININESS, _shineness );
 }
 
 void Material::unLoad()
@@ -23,7 +24,10 @@ void Material::unLoad()
 
 Material::Material()
 {
-	//empty
+	Utility::initVectorf( _ambient,  4 );
+	Utility::initVectorf( _diffuse,  4 );
+	Utility::initVectorf( _specular, 4 );
+	_shineness = 0.0;
 }
 
 void Material::setAmbient( float r, float g, float b, float alpha )

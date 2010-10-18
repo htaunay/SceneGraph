@@ -5,6 +5,7 @@
  */
 
 #include "Sphere.h"
+#include "glut.h"
 
 void Sphere::draw()
 {

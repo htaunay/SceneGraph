@@ -7,12 +7,11 @@
 #ifndef _SHAPE_H_
 #define _SHAPE_H_
 
-#include "glut.h"
-
+//! Virtual generic class for all shapes that are used in the Entity nodes
 class Shape
 {
 public:
-    Shape();
+	Shape() {};
 
 	virtual void draw() = 0;
 };

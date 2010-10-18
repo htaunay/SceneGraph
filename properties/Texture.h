@@ -10,39 +10,38 @@
 #include "gl.h"
 #include "Appearance.h"
 
+//! Defines the texture appearance property used in Entity's.
+//! At the moment, only BMP images can be loaded as textures.
 class Texture : public Appearance
 {
 public:
+	//! Loads and configures the texture attribute to the OpengL state.
 	virtual void load();
 
+	//! Unloads the texture attribute from the OpengL state.
 	virtual void unLoad();
 
 public:
+	//! Constructor that initializes all of Texture's attributes.
 	Texture();
 
+	//! Delete's any loaded texture from the OpenGL state.
 	~Texture();
 
-	bool LoadImage( const int width, const int height, const char *filepath );
+	//! Set's the autmoatic texture generation paramenters to OpenGL.
+	void setTextGenParameters( GLfloat* borderColor = NULL, GLfloat* materialColor = NULL );
 
-	void SetGenerateTextureCoord(bool g);
-
-	void SetTextureParameters( GLfloat* borderColor = NULL, GLfloat* materialColor = NULL );
-
-	void SetPlanes( GLfloat *s_plane, GLfloat *t_plane);
+	//! Loads a BMP image as a texture.
+	bool loadImage( const char *filepath );
 
 private:
-	bool _generate_tex_coord;
-
-	GLfloat _material_color[4];
-	GLfloat _border_color[4];
+	GLfloat _materialColor[4];
+	GLfloat _borderColor[4];
 
 	unsigned int _id;
-	void *_image;
-	int _image_width;
-	int _image_height;
-
-	GLfloat _s_gen_plane[4];
-	GLfloat _t_gen_plane[4];
+	unsigned int _imgWidth;
+	unsigned int _imgHeight;
+	unsigned char *_image;
 };
 
 #endif
