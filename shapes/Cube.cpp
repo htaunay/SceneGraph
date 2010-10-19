@@ -98,7 +98,7 @@ void Cube::draw()
 		{
 			glBegin( GL_QUADS );
 			{
-				glNormal3f( 0, 0, 1 );
+				glNormal3f( 0, 0, -1 );
 
 				glVertex3f( xpot,		 -ypot,		   zpot );
 				glVertex3f( xpot,		 -ypot+yslice, zpot );
@@ -138,7 +138,7 @@ void Cube::draw()
 	}
 
 	//Draw Left Face
-	configTexturePlanes( sy, tz );
+	configTexturePlanes( sz, ty );
 
 	xpot = _x/2;
 	zpot = _z/2;
@@ -207,8 +207,8 @@ Cube::Cube( float x, float y, float z, int slices )
 void Cube::configTexturePlanes( int sp, int tp )
 {
 	// Configures the plane vectors
-	_sGenPlane[sp] = 1.0;
-	_tGenPlane[tp] = 1.0;
+	_sGenPlane[sp] = 0.5;
+	_tGenPlane[tp] = 0.5;
 
 	// Sets the s,t planes to OpenGL
 	glTexGenfv( GL_S, GL_OBJECT_PLANE, &_sGenPlane[0] );

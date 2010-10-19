@@ -75,11 +75,11 @@ void generateTable()
 	spotLight->setupAttenuation( 1, 0, 0 );
 
 	Texture *tableTexture = new Texture();
-	tableTexture->loadImage( "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/wood.bmp" );
+	tableTexture->loadImage( "../data/wood.bmp" );
 	tableTexture->setTextGenParameters();
 
 	Texture *floorTexture = new Texture();
-	floorTexture->loadImage( "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/bricks.bmp" );
+	floorTexture->loadImage( "../data/bricks.bmp" );
 	floorTexture->setTextGenParameters();
 
 	Material *ballMaterial = new Material();
@@ -128,7 +128,7 @@ void generateTable()
 	Cylinder *lampHeadShape = new Cylinder( 0.05, 0.4, 0.6, false );
 	Sphere *lampBulbShape = new Sphere( 0.15 );
 	Mesh *bunnyShape = new Mesh();
-	bunnyShape->loadGeometry( "/media/Barcelona/PUC/PUC 2010.2/Computação Gráfica Tridimensional/SceneGraph/data/bunny.msh" );
+	bunnyShape->loadGeometry( "../data/bunny.msh" );
 
 	Entity *tableTopEntity = new Entity();
 	tableTopEntity->setShape( tableTopShape );
