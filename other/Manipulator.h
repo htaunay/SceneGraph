@@ -64,7 +64,8 @@ private:
 	static Manipulator* _instance;
 
 	bool _wireframe;
-	float _matrix[16];
+	float _tMatrix[16];
+	float _iMatrix[16];
 	VVector _center;
 	VVector _origin;
 };

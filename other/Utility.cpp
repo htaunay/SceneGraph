@@ -9,6 +9,30 @@
 const int Utility::MATRIX_SIZE = 16;
 const int Utility::VECTOR_SIZE = 4;
 
+int Utility::abs( int value )
+{
+	int aux = value;
+	if( aux < 0 )
+		aux *= -1;
+	return aux;
+}
+
+float Utility::abs( float value )
+{
+	float aux = value;
+	if( aux < 0 )
+		aux *= -1;
+	return aux;
+}
+
+double Utility::abs( double value )
+{
+	double aux = value;
+	if( aux < 0 )
+		aux *= -1;
+	return aux;
+}
+
 void Utility::initVectorf( float *vec, int size, int value )
 {
 	for( int i = 0; i < size; i++ )

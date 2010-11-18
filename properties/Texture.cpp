@@ -101,6 +101,7 @@ void Texture::unLoad()
 Texture::Texture()
 {
 	_image = NULL;
+	_autoGen = false;
 
 	Utility::initVectorgf( _materialColor, 3 );
 	Utility::initVectorgf( _borderColor, 4 );
@@ -177,7 +178,6 @@ bool Texture::loadImage( const char *filepath )
 	_image   = (unsigned char*)malloc( imgsize );
 	if( _image == NULL )
 		return false;
-
 
 	// Reading the image palette, and closing file connection
 	garbage = bmpRead4Bytes(fp);

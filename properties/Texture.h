@@ -31,12 +31,17 @@ public:
 	//! Set's the autmoatic texture generation paramenters to OpenGL.
 	void setTextGenParameters( GLfloat* borderColor = NULL, GLfloat* materialColor = NULL );
 
+	//! Set's if the texture genration is automatic or manual.
+	inline void useAutmoaticGeneration( bool autoGen ) { _autoGen = autoGen; }
+
 	//! Loads a BMP image as a texture.
 	bool loadImage( const char *filepath );
 
 private:
 	GLfloat _materialColor[4];
 	GLfloat _borderColor[4];
+
+	bool _autoGen;
 
 	unsigned int _id;
 	unsigned int _imgWidth;

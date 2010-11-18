@@ -57,6 +57,13 @@ void Transform::rotate( double angle, double x, double y, double z )
 	glRotated( angle, x, y, z );
 	glGetDoublev( GL_MODELVIEW_MATRIX, _tMatrix );
 	glPopMatrix();
+
+	glPushMatrix();
+	glLoadIdentity();
+	glRotated( -angle, x, y, z );
+	glLoadMatrixd( _iMatrix );
+	glGetDoublev( GL_MODELVIEW_MATRIX, _iMatrix );
+	glPopMatrix();
 }
 
 void Transform::scale( double x, double y, double z )

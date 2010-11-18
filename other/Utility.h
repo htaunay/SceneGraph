@@ -16,6 +16,10 @@
 class Utility
 {
 public:
+	static int abs( int value );
+	static float abs( float value );
+	static double abs( double value );
+
 	//! Initialize's a float vector of a given size with a given value (default is 0).
 	static void initVectorf( float *vec, int size, int value = 0 );
 

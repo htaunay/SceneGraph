@@ -6,6 +6,7 @@
 // Class provided by Prof. Waldemar Celes for camera manipulation.
 
 #include "Manipulator.h"
+#include "Utility.h"
 
 #include "glut.h"
 
@@ -15,6 +16,8 @@
 
 #define PI 3.1459
 #define TORAD(x) (x*180.0f/PI)
+#define ROTATION_SCALE 0.5
+#define ZOOM_SCALE 0.5
 
 Manipulator* Manipulator::_instance = 0;
 
@@ -75,16 +78,16 @@ static void keyboard( unsigned char key, int x, int y )
 		return;
 
 	if( key == 'w' )
-		Manipulator::getInstance()->translate( 0, 0, 0.1 );
+		Manipulator::getInstance()->translate( 0, 0, 0.25 );
 
 	else if( key == 's' )
-		Manipulator::getInstance()->translate( 0, 0, -0.1 );
+		Manipulator::getInstance()->translate( 0, 0, -0.25 );
 
 	else if( key == 'a' )
-		Manipulator::getInstance()->translate( 0.1, 0, 0 );
+		Manipulator::getInstance()->translate( 0.25, 0, 0 );
 
 	else if( key == 'd' )
-		Manipulator::getInstance()->translate( -0.1, 0, 0 );
+		Manipulator::getInstance()->translate( -0.25, 0, 0 );
 
 	if( key == 'l' )
 		Manipulator::getInstance()->setWireframe();
@@ -107,13 +110,14 @@ static void motion( int x, int y )
 			VVector v0 = map(g_x0, g_y0);
 			VVector v1 = map(x, y);
 			VVector r = Cross(v0, v1);
-			Manipulator::getInstance()->rotate(TORAD(2*asin(r.Length())),r.x,r.y,r.z);
+			Manipulator::getInstance()->rotate(TORAD(2*asin(r.Length()*ROTATION_SCALE)),r.x,r.y,r.z);
 		}
 		else if( g_state == 'r' )
 		{
 			int vp[4];
 			glGetIntegerv(GL_VIEWPORT,vp);
 			float f = dx > dy ? (float)(x-g_x0) / vp[2] : (float) (-y+g_y0) / vp[3];
+			f *= ZOOM_SCALE;
 			Manipulator::getInstance()->scale(1-f, 1-f, 1-f);
 		}
 
@@ -149,7 +153,7 @@ void Manipulator::setOrigin( double *origin )
 void Manipulator::load()
 {
 	glTranslatef( 0.0f, 0.0f, -_center.y );
-	glMultMatrixf( _matrix );
+	glMultMatrixf( _tMatrix );
 	glTranslatef( 0.0f, 0.0f, _center.y );
 }
 
@@ -159,33 +163,42 @@ void Manipulator::identity()
 	glMatrixMode( GL_MODELVIEW );
 	glPushMatrix();
 	glLoadIdentity();
-	glGetFloatv( GL_MODELVIEW_MATRIX, _matrix );
+	glGetFloatv( GL_MODELVIEW_MATRIX, _tMatrix );
 	glPopMatrix();
 	glPopAttrib();
 }
 
 void Manipulator::rotate( float angle, float rx, float ry, float rz )
 {
-	glPushAttrib(GL_TRANSFORM_BIT);
-	glMatrixMode(GL_MODELVIEW);
+	glPushAttrib( GL_TRANSFORM_BIT );
+	glMatrixMode( GL_MODELVIEW );
+
 	glPushMatrix();
 	glLoadIdentity();
 	glRotatef( angle, rx, ry, rz );
-	glMultMatrixf( _matrix );
-	glGetFloatv(GL_MODELVIEW_MATRIX, _matrix);
+	glMultMatrixf( _tMatrix );
+	glGetFloatv( GL_MODELVIEW_MATRIX, _tMatrix );
 	glPopMatrix();
+
+	glPushMatrix();
+	glLoadIdentity();
+	glRotated( -angle, rx, ry, rz );
+	glLoadMatrixf( _iMatrix );
+	glGetFloatv( GL_MODELVIEW_MATRIX, _iMatrix );
+	glPopMatrix();
+
 	glPopAttrib();
 }
 
 void Manipulator::scale( float sx, float sy, float sz )
 {
-	glPushAttrib(GL_TRANSFORM_BIT);
-	glMatrixMode(GL_MODELVIEW);
+	glPushAttrib( GL_TRANSFORM_BIT );
+	glMatrixMode( GL_MODELVIEW );
 	glPushMatrix();
 	glLoadIdentity();
 	glScalef( sx, sy, sz );
-	glMultMatrixf( _matrix);
-	glGetFloatv(GL_MODELVIEW_MATRIX,  _matrix);
+	glMultMatrixf( _tMatrix );
+	glGetFloatv( GL_MODELVIEW_MATRIX,  _tMatrix );
 	glPopMatrix();
 	glPopAttrib();
 }
@@ -193,9 +206,9 @@ void Manipulator::scale( float sx, float sy, float sz )
 void Manipulator::translate( float tx, float ty, float tz )
 {
 	glPushMatrix();
-	glLoadMatrixf( _matrix );
+	glLoadMatrixf( _tMatrix );
 	glTranslatef( tx, ty, tz );
-	glGetFloatv( GL_MODELVIEW_MATRIX, _matrix );
+	glGetFloatv( GL_MODELVIEW_MATRIX, _tMatrix );
 	glPopMatrix();
 }
 
