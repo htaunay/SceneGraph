@@ -98,7 +98,7 @@ void Cube::draw()
 		{
 			glBegin( GL_QUADS );
 			{
-				glNormal3f( 0, 0, -1 );
+				glNormal3f( 0, 0, 1 );
 
 				glVertex3f( xpot,		 -ypot,		   zpot );
 				glVertex3f( xpot,		 -ypot+yslice, zpot );

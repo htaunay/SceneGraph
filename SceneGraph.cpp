@@ -69,8 +69,12 @@ void generateTable()
 	floorTexture->loadImage( "../data/bricks.bmp" );
 	floorTexture->setTextGenParameters();
 
+	Material *recepientMaterial = new Material();
+	recepientMaterial->setAmbient( 0, 0.2, 0.9, 0.5 );
+	recepientMaterial->setDiffuse( 0, 0.2, 0.9, 0.5 );
+	recepientMaterial->setSpecular( 0, 0.2, 0.9, 0.5 );
+
 	Material *poolMaterial = new Material();
-	//poolMaterial->setAmbient( 1.0, 1.0, 1.0, 1.0 );
 	poolMaterial->setDiffuse( 0.7, 0.7, 0.7, 1.0 );
 	poolMaterial->setSpecular( 0.7, 0.7, 0.7, 1.0 );
 	poolMaterial->setShineness( 0.7 );
@@ -78,7 +82,8 @@ void generateTable()
 	Cube *tableTopShape = new Cube( 6, 0.5, 10 );
 	Cube *tableFootShape = new Cube( 0.5, 4, 0.5 );
 	Cube *floorShape = new Cube( 10, 0.05, 14, 1 );
-	SpherePool *poolShape = new SpherePool();
+	Cube *recepientShape = new Cube( 3, 5.5, 3, 1 );
+	SpherePool *poolShape = new SpherePool( 3, 5 );
 
 	Entity *tableTopEntity = new Entity();
 	tableTopEntity->setShape( tableTopShape );
@@ -91,6 +96,10 @@ void generateTable()
 	Entity *floorEntity = new Entity();
 	floorEntity->setShape( floorShape );
 	floorEntity->setAppearance( floorTexture );
+
+	Entity *recepientEntity = new Entity();
+	recepientEntity->setShape( recepientShape );
+	recepientEntity->setAppearance( recepientMaterial );
 
 	Entity *poolEntity = new Entity();
 	poolEntity->setShape( poolShape );
@@ -136,6 +145,11 @@ void generateTable()
 	spherePool->translate( 0, 0.25, 0 );
 	spherePool->addNode( poolEntity );
 	tableBase->addNode( spherePool );
+
+	Transform *recepient = new Transform();
+	recepient->translate( 0, 3, 0 );
+	recepient->addNode( recepientEntity );
+	tableBase->addNode( recepient );
 }
 
 static void redrawScene()
@@ -171,6 +185,9 @@ void showScene( int argc, char* argv[] )
 
 	generateScene();
 	generateTable();
+
+	glEnable (GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	glutDisplayFunc( redrawScene );
 	glutIdleFunc( redrawScene );

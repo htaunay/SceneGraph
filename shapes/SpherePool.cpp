@@ -12,9 +12,9 @@
 #include <time.h>
 #include <cstdlib>
 
-static const int	NUM_SPHERES		= 30;
+static const int	NUM_SPHERES		= 250;
 static const float	SPHERE_RADIUS	= 0.25;
-static const float	DEFAULT_LOSS	= 0.8;
+static const float	DEFAULT_LOSS	= 0.9;
 static const float	DEFAULT_GRAVITY	= 0.005;
 static const float	MOVEMENT_THREASHOLD = 0.0001;
 
@@ -55,18 +55,17 @@ void PhysicsSphere::generateRandPosition( float height, float width )
 	_position.y = height;
 }
 
-void PhysicsSphere::setPosition( float x, float y, float z )
+void PhysicsSphere::generateRandMovement( float height, float width )
 {
-	_position.x = x;
-	_position.y = y;
-	_position.z = z;
-}
+	srand((unsigned)time(NULL) * rand() );
+	float x = ( rand() % ((int)width*100) )/100.0 - ( width/2.0 );
 
-void PhysicsSphere::setMovement( float x, float y, float z )
-{
-	_movement.x = x;
-	_movement.y = y;
-	_movement.z = z;
+	srand((unsigned)time(NULL) * rand() );
+	float z = ( rand() % ((int)width*100) )/100.0 - ( width/2.0 );
+
+	_movement.x = x/5;
+	_movement.z = z/5;
+	_movement.y = height/100;
 }
 
 void PhysicsSphere::applyGravity( float gravity )
@@ -94,6 +93,11 @@ void PhysicsSphere::applyMovementLoss( float loss )
   Sphere Pool
 *******************************************************************************/
 
+VVector auxPos;
+VVector auxMov;
+GLfloat* auxColor;
+PhysicsSphere *auxSph;
+
 SpherePool::SpherePool( float width, float height )
 {
 	_width = width;
@@ -107,6 +111,11 @@ SpherePool::SpherePool( float width, float height )
 
 void SpherePool::draw()
 {
+	step();
+}
+
+void SpherePool::step()
+{
 	updateNumSpheres();
 	updateMovement();
 	updatePoolCollisions();
@@ -119,7 +128,7 @@ void SpherePool::updateNumSpheres()
 {
 	counter++;
 
-	if( counter == 50 )
+	if( counter == 30 )
 		counter = 0;
 	else
 		return;
@@ -130,6 +139,7 @@ void SpherePool::updateNumSpheres()
 		PhysicsSphere* ps = new PhysicsSphere();
 		ps->generateRandColor();
 		ps->generateRandPosition( _height, _width );
+		ps->generateRandMovement( _height, _width );
 		//ps->setPosition( 0, _height, 0 );
 
 		_spheres.push_back( ps );
@@ -138,65 +148,69 @@ void SpherePool::updateNumSpheres()
 
 void SpherePool::updateMovement()
 {
-	PhysicsSphere* aux;
-
 	for( int i = 0; i < _spheres.size(); i++ )
 	{
-		aux = _spheres.at(i);
+		auxSph = _spheres.at(i);
+		auxSph->applyGravity( DEFAULT_GRAVITY );
 
-		aux->applyGravity( DEFAULT_GRAVITY );
+		auxPos = auxSph->getPosition();
+		auxMov = auxSph->getMovement();
 
-		aux->setPosX( aux->getPosX() + aux->getMovX() );
-		aux->setPosY( aux->getPosY() + aux->getMovY() );
-		aux->setPosZ( aux->getPosZ() + aux->getMovZ() );
+		auxPos += auxMov;
+		auxSph->setPosition( auxPos );
 	}
 }
 
 void SpherePool::updatePoolCollisions()
 {
 	bool collisionDetected;
-	PhysicsSphere* aux;
 
 	for( int i = 0; i < _spheres.size(); i++ )
 	{
-		aux = _spheres.at(i);
+		auxSph = _spheres.at(i);
+		auxPos = auxSph->getPosition();
+		auxMov = auxSph->getMovement();
+
 		collisionDetected = false;
 
-		if( aux->getPosX() > _sideLimit )
+		if( auxPos.x > _sideLimit )
 		{
-			aux->setPosX( _sideLimit );
-			aux->setMovX( -aux->getMovX() );
+			auxPos.x = _sideLimit;
+			auxMov.x *= -1;
 			collisionDetected = true;
 		}
-		if( aux->getPosX() < (-_sideLimit) )
+		if( auxPos.x < -(_sideLimit) )
 		{
-			aux->setPosX( (-_sideLimit) );
-			aux->setMovX( -aux->getMovX() );
-			collisionDetected = true;
-		}
-
-		if( aux->getPosY() < _floorLimit )
-		{
-			aux->setPosY( _floorLimit );
-			aux->setMovY( -aux->getMovY() );
+			auxPos.x = -(_sideLimit);
+			auxMov.x *= -1;
 			collisionDetected = true;
 		}
 
-		if( aux->getPosZ() > _sideLimit )
+		if( auxPos.y < _floorLimit )
 		{
-			aux->setPosZ( _sideLimit );
-			aux->setMovZ( -aux->getMovZ() );
+			auxPos.y = _floorLimit;
+			auxMov.y *= -1;
 			collisionDetected = true;
 		}
-		if( aux->getPosZ() < (-_sideLimit) )
+
+		if( auxPos.z > _sideLimit )
 		{
-			aux->setPosZ( (-_sideLimit) );
-			aux->setMovZ( -aux->getMovZ() );
+			auxPos.z = _sideLimit;
+			auxMov.z *= -1;
 			collisionDetected = true;
 		}
+		if( auxPos.z < -(_sideLimit) )
+		{
+			auxPos.z = -(_sideLimit);
+			auxMov.z *= -1;
+			collisionDetected = true;
+		}
+
+		auxSph->setPosition( auxPos );
+		auxSph->setMovement( auxMov );
 
 		if( collisionDetected )
-			aux->applyMovementLoss( DEFAULT_LOSS );
+			auxSph->applyMovementLoss( DEFAULT_LOSS );
 	}
 }
 
@@ -230,14 +244,23 @@ void SpherePool::updateSphereCollisions()
 					pos1 += invasion; sphere1->setPosition( pos1 );
 					pos2 -= invasion; sphere2->setPosition( pos2 );
 
+					// Switches spheres directions/speeds
+					VVector dir2 = distance;
+					dir2.Normalize();
+					VVector dir1 = dir2;
+					dir1.invert();
+
 					VVector mov1 = sphere1->getMovement();
 					VVector mov2 = sphere2->getMovement();
 
-					mov1 *= DEFAULT_LOSS;
-					mov2 *= DEFAULT_LOSS;
+					float speed1 = mov1.Length() * DEFAULT_LOSS;
+					float speed2 = mov2.Length() * DEFAULT_LOSS;
 
-					sphere1->setMovement( mov2 );
-					sphere2->setMovement( mov1 );
+					dir1 *= speed1;
+					dir2 *= speed2;
+
+					sphere1->setMovement( dir2 );
+					sphere2->setMovement( dir1 );
 				}
 			}
 		}
@@ -246,17 +269,17 @@ void SpherePool::updateSphereCollisions()
 
 void SpherePool::updateRender()
 {
-	PhysicsSphere* aux;
-
 	for( int i = 0; i < _spheres.size(); i++ )
 	{
-		aux = _spheres.at(i);
+		auxSph = _spheres.at(i);
+		auxPos = auxSph->getPosition();
+		auxColor = auxSph->getColor();
 
 		glPushAttrib(GL_LIGHTING_BIT);
-		glColor3f( aux->getColorR(), aux->getColorG(), aux->getColorB() );
-		glMaterialfv( GL_FRONT, GL_AMBIENT, aux->getColor() );
+		glColor3f( auxColor[0], auxColor[1], auxColor[2] );
+		glMaterialfv( GL_FRONT, GL_AMBIENT, auxColor );
 		glPushMatrix();
-		glTranslatef( aux->getPosX(), aux->getPosY(), aux->getPosZ() );
+		glTranslatef( auxPos.x, auxPos.y, auxPos.z );
 		glutSolidSphere( SPHERE_RADIUS, 64, 64 );
 		glPopMatrix();
 		glPopAttrib();

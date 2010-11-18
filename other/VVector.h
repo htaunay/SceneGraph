@@ -48,6 +48,11 @@ struct VVector
     }
     return l;
   }
+
+  void invert()
+  {
+	  x = -x; y = -y; z = -z;
+  }
   
   VVector& operator+= (const VVector& other)
   {
