@@ -7,6 +7,14 @@
 #include "Environ.h"
 #include "Utility.h"
 
+#include "gl.h"
+
+
+void Environ::render()
+{
+	glClearColor( 1.0, 1.0, 1.0, 1.0 );
+}
+
 Environ::Environ()
 {
 	_fogStart = 0;

@@ -19,6 +19,7 @@
 #include "Transform.h"
 #include "SpotLight.h"
 #include "SpherePool.h"
+#include "ToonShader.h"
 #include "PositionalLight.h"
 #include "DirectionalLight.h"
 
@@ -39,9 +40,9 @@ void generateScene()
 
 	Camera *camera = new Camera();
 	camera->setZNear( 0.1 );
-	camera->setZFar( 50 );
+	camera->setZFar( 5000 );
 	camera->setFovy( 50);
-	camera->setEye( 8, 8, 8 );
+	camera->setEye( 10, 13, 10 );
 	camera->setCenter( 0, 0, 0 );
 	camera->setUp( 0, 1, 0 );
 	scene->addNode( camera );
@@ -57,45 +58,27 @@ void generateScene()
 	dirLight->setSpecular( 0.2, 0.2, 0.2, 1 );
 	dirLight->setDirection( 0, 1, 1 );
 	scene->addNode( dirLight );
+
+	/*PositionalLight *posLight = new PositionalLight();
+	posLight->setAmbient( 0.2, 0.2, 0.2, 1 );
+	posLight->setDiffuse( 0.2, 0.2, 0.2, 1 );
+	posLight->setSpecular( 0.2, 0.2, 0.2, 1 );
+	posLight->setPosition( 0, 1, 1 );
+	scene->addNode( posLight );*/
 }
 
 void generateTable()
 {
-	Texture *tableTexture = new Texture();
-	tableTexture->loadImage( "../data/wood.bmp" );
-	tableTexture->setTextGenParameters();
-
-	Texture *floorTexture = new Texture();
-	floorTexture->loadImage( "../data/bricks.bmp" );
-	floorTexture->setTextGenParameters();
-
 	Material *recepientMaterial = new Material();
-	recepientMaterial->setAmbient( 0, 0.2, 0.9, 0.5 );
-	recepientMaterial->setDiffuse( 0, 0.2, 0.9, 0.5 );
-	recepientMaterial->setSpecular( 0, 0.2, 0.9, 0.5 );
+	recepientMaterial->setAmbient( 0, 0.2, 0.9, 0.1 );
+	recepientMaterial->setDiffuse( 0, 0.2, 0.9, 0.1 );
+	recepientMaterial->setSpecular( 0, 0.2, 0.9, 0.1 );
 
+	//dummy
 	Material *poolMaterial = new Material();
-	poolMaterial->setDiffuse( 0.7, 0.7, 0.7, 1.0 );
-	poolMaterial->setSpecular( 0.7, 0.7, 0.7, 1.0 );
-	poolMaterial->setShineness( 0.7 );
 
-	Cube *tableTopShape = new Cube( 6, 0.5, 10 );
-	Cube *tableFootShape = new Cube( 0.5, 4, 0.5 );
-	Cube *floorShape = new Cube( 10, 0.05, 14, 1 );
-	Cube *recepientShape = new Cube( 3, 5.5, 3, 1 );
-	SpherePool *poolShape = new SpherePool( 3, 5 );
-
-	Entity *tableTopEntity = new Entity();
-	tableTopEntity->setShape( tableTopShape );
-	tableTopEntity->setAppearance( tableTexture );
-
-	Entity *tableFootEntity = new Entity();
-	tableFootEntity->setShape( tableFootShape );
-	tableFootEntity->setAppearance( tableTexture );
-
-	Entity *floorEntity = new Entity();
-	floorEntity->setShape( floorShape );
-	floorEntity->setAppearance( floorTexture );
+	Cube *recepientShape = new Cube( 5, 8, 5, 50 );
+	SpherePool *poolShape = new SpherePool( 5, 7 );
 
 	Entity *recepientEntity = new Entity();
 	recepientEntity->setShape( recepientShape );
@@ -105,51 +88,17 @@ void generateTable()
 	poolEntity->setShape( poolShape );
 	poolEntity->setAppearance( poolMaterial );
 
-	Transform *table = new Transform();
-	table->translate( 0, 2, 0 );
-	Scene::getInstance()->addNode( table );
-
-	Group *tableBase = new Group();
-	table->addNode( tableBase );
-
-	Transform *tableTop = new Transform();
-	tableBase->addNode( tableTop );
-	tableTop->addNode( tableTopEntity );
-
-	Transform *tableFoot1 = new Transform();
-	tableFoot1->translate( -2.75, -2.25, -4.75 );
-	tableFoot1->addNode( tableFootEntity );
-	tableBase->addNode( tableFoot1 );
-
-	Transform *tableFoot2 = new Transform();
-	tableFoot2->translate( -2.75, -2.25, 4.75 );
-	tableFoot2->addNode( tableFootEntity );
-	tableBase->addNode( tableFoot2 );
-
-	Transform *tableFoot3 = new Transform();
-	tableFoot3->translate( 2.75, -2.25, -4.75 );
-	tableFoot3->addNode( tableFootEntity );
-	tableBase->addNode( tableFoot3 );
-
-	Transform *tableFoot4 = new Transform();
-	tableFoot4->translate( 2.75, -2.25, 4.75 );
-	tableFoot4->addNode( tableFootEntity );
-	tableBase->addNode( tableFoot4 );
-
-	Transform *floor = new Transform();
-	floor->translate( 0, -4.25, 0 );
-	floor->addNode( floorEntity );
-	table->addNode( floor );
+	Transform *root = new Transform();
+	Scene::getInstance()->addNode( root );
 
 	Transform *spherePool = new Transform();
-	spherePool->translate( 0, 0.25, 0 );
 	spherePool->addNode( poolEntity );
-	tableBase->addNode( spherePool );
+	root->addNode( spherePool );
 
 	Transform *recepient = new Transform();
-	recepient->translate( 0, 3, 0 );
+	recepient->translate( 0, 4, 0 );
 	recepient->addNode( recepientEntity );
-	tableBase->addNode( recepient );
+	root->addNode( recepient );
 }
 
 static void redrawScene()
@@ -178,6 +127,9 @@ void showScene( int argc, char* argv[] )
 	glutInitDisplayMode( GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGB );
 	glutInitWindowSize( 1200, 675 );
 	glutCreateWindow( "SceneGraph" );
+
+	ToonShader::getInstance()->init();
+
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glutSwapBuffers();
 

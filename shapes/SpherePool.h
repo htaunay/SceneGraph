@@ -21,6 +21,7 @@ public:
 	inline void setMovement( VVector movement ) { _movement = movement; }
 	inline VVector getMovement() { return _movement; }
 	void generateRandMovement( float height, float width );
+	void applyMovement( VVector movement );
 
 	inline GLfloat* getColor() { return _color; }
 	void generateRandColor();

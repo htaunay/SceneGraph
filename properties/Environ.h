@@ -20,6 +20,9 @@
 class Environ : public Group
 {
 public:
+	virtual void render();
+
+public:
 	//! Constructor that initializes all of Environ's attributes.
 	Environ();
 

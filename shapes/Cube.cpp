@@ -5,6 +5,7 @@
  */
 
 #include "Cube.h"
+#include "glut.h"
 #include "Utility.h"
 
 // Auxiliary structures for defining which planes to be used during the
@@ -21,7 +22,12 @@ enum tPlane{
 
 void Cube::draw()
 {
-	int i, j;
+	glPushMatrix();
+	glScalef( _x, _y, _z );
+	glutSolidCube( 1 );
+	glPopMatrix();
+
+	/*int i, j;
 
 	float xpot;
 	float ypot;
@@ -189,7 +195,7 @@ void Cube::draw()
 		zpot -= zslice;
 	}
 
-	glPopMatrix();
+	glPopMatrix();*/
 }
 
 Cube::Cube( float x, float y, float z, int slices )

@@ -4,6 +4,7 @@
   Teacher: Waldemar Celes
  */
 
+#include "ToonShader.h"
 #include "Utility.h"
 #include "SpherePool.h"
 
@@ -12,11 +13,26 @@
 #include <time.h>
 #include <cstdlib>
 
-static const int	NUM_SPHERES		= 250;
-static const float	SPHERE_RADIUS	= 0.25;
-static const float	DEFAULT_LOSS	= 0.9;
-static const float	DEFAULT_GRAVITY	= 0.005;
-static const float	MOVEMENT_THREASHOLD = 0.0001;
+static const int	NUM_SPHERES		= 75;
+static const float	SPHERE_RADIUS	= 0.45;
+static const float	DEFAULT_SOLID_LOSS	= 1.5;
+static const float	DEFAULT_SPHERE_LOSS	= 0.1;
+static const float	DEFAULT_GRAVITY	= 0.05;
+static const float	MOVEMENT_THREASHOLD = 0.05;
+
+VVector auxPos;
+VVector auxMov;
+GLfloat* auxColor;
+PhysicsSphere *auxSph;
+
+float lastTime         = 0.0;
+float currentTime      = 0.0;
+float diffTime         = 0.0;
+float totalTime        = 0.0;
+float fps			   = 0.0;
+unsigned int numFrames = 0;
+
+float sphereCounter = 0.0;
 
 /*******************************************************************************
   Physics Sphere
@@ -70,14 +86,22 @@ void PhysicsSphere::generateRandMovement( float height, float width )
 
 void PhysicsSphere::applyGravity( float gravity )
 {
-	_movement.y -= gravity;
+	_movement.y -= ( gravity * (diffTime/30.0) );
+}
+
+void PhysicsSphere::applyMovement( VVector movement )
+{
+	_position.x += ( movement.x * (diffTime/30.0) );
+	_position.y += ( movement.y * (diffTime/30.0) );
+	_position.z += ( movement.z * (diffTime/30.0) );
 }
 
 void PhysicsSphere::applyMovementLoss( float loss )
 {
-	_movement.x *= DEFAULT_LOSS;
-	_movement.y *= DEFAULT_LOSS;
-	_movement.z *= DEFAULT_LOSS;
+	float nloss = 1 - ( loss * (diffTime/30.0) );
+	_movement.x *= nloss;
+	_movement.y *= nloss;
+	_movement.z *= nloss;
 
 	if( Utility::abs( _movement.x ) < MOVEMENT_THREASHOLD )
 		_movement.x = 0.0;
@@ -93,11 +117,6 @@ void PhysicsSphere::applyMovementLoss( float loss )
   Sphere Pool
 *******************************************************************************/
 
-VVector auxPos;
-VVector auxMov;
-GLfloat* auxColor;
-PhysicsSphere *auxSph;
-
 SpherePool::SpherePool( float width, float height )
 {
 	_width = width;
@@ -105,7 +124,7 @@ SpherePool::SpherePool( float width, float height )
 
 	_gravity = DEFAULT_GRAVITY;
 
-	_sideLimit = ( _width/2.0 ) - SPHERE_RADIUS;
+	_sideLimit = ( _width/2.0 ) - SPHERE_RADIUS - 0.05;
 	_floorLimit = SPHERE_RADIUS;
 }
 
@@ -116,6 +135,21 @@ void SpherePool::draw()
 
 void SpherePool::step()
 {
+	currentTime = glutGet( GLUT_ELAPSED_TIME );
+	diffTime = currentTime - lastTime;
+	lastTime = currentTime;
+	totalTime += diffTime;
+	sphereCounter += diffTime;
+	numFrames++;
+
+	if( totalTime > 1000 )
+	{
+		fps = (numFrames * 1000.0)/( totalTime );
+		totalTime = 0;
+		numFrames = 0;
+		printf( "FPS: %f\n", fps, diffTime );
+	}
+
 	updateNumSpheres();
 	updateMovement();
 	updatePoolCollisions();
@@ -123,13 +157,10 @@ void SpherePool::step()
 	updateRender();
 }
 
-int counter = 0;
 void SpherePool::updateNumSpheres()
 {
-	counter++;
-
-	if( counter == 30 )
-		counter = 0;
+	if( sphereCounter > 500 )
+		sphereCounter = 0.0;
 	else
 		return;
 
@@ -156,8 +187,8 @@ void SpherePool::updateMovement()
 		auxPos = auxSph->getPosition();
 		auxMov = auxSph->getMovement();
 
-		auxPos += auxMov;
-		auxSph->setPosition( auxPos );
+		auxSph->applyMovement( auxMov );
+		//auxSph->setPosition( auxPos );
 	}
 }
 
@@ -210,7 +241,7 @@ void SpherePool::updatePoolCollisions()
 		auxSph->setMovement( auxMov );
 
 		if( collisionDetected )
-			auxSph->applyMovementLoss( DEFAULT_LOSS );
+			auxSph->applyMovementLoss( DEFAULT_SOLID_LOSS );
 	}
 }
 
@@ -253,14 +284,18 @@ void SpherePool::updateSphereCollisions()
 					VVector mov1 = sphere1->getMovement();
 					VVector mov2 = sphere2->getMovement();
 
-					float speed1 = mov1.Length() * DEFAULT_LOSS;
-					float speed2 = mov2.Length() * DEFAULT_LOSS;
+					float speed1 = mov1.Length();
+					float speed2 = mov2.Length();
 
 					dir1 *= speed1;
 					dir2 *= speed2;
 
 					sphere1->setMovement( dir2 );
 					sphere2->setMovement( dir1 );
+
+					double loss = DEFAULT_SPHERE_LOSS / (_spheres.size()*_spheres.size());
+					sphere1->applyMovementLoss( loss );
+					sphere2->applyMovementLoss( loss );
 				}
 			}
 		}
@@ -269,11 +304,15 @@ void SpherePool::updateSphereCollisions()
 
 void SpherePool::updateRender()
 {
+	ToonShader::getInstance()->enable();
+
 	for( int i = 0; i < _spheres.size(); i++ )
 	{
 		auxSph = _spheres.at(i);
 		auxPos = auxSph->getPosition();
 		auxColor = auxSph->getColor();
+
+		ToonShader::getInstance()->setColor( auxColor );
 
 		glPushAttrib(GL_LIGHTING_BIT);
 		glColor3f( auxColor[0], auxColor[1], auxColor[2] );
@@ -284,4 +323,6 @@ void SpherePool::updateRender()
 		glPopMatrix();
 		glPopAttrib();
 	}
+
+	ToonShader::getInstance()->disable();
 }

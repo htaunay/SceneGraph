@@ -5,8 +5,8 @@
  */
 
 #include "Material.h"
-#include "gl.h"
 #include "Utility.h"
+#include "ToonShader.h"
 
 void Material::load()
 {
