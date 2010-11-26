@@ -7,7 +7,7 @@
 #ifndef _UTILITY_H_
 #define _UTILITY_H_
 
-#include "gl.h"
+#include <GL/gl.h>
 
 /*!
 	Auxiliary static class for utility methods, for the sole purpurse of

@@ -5,7 +5,7 @@
  */
 
 #include "Shape.h"
-#include "gl.h"
+#include <GL/gl.h>
 
 //! Shape object in the from of a Cube, with automatic texture geneartion support.
 class Cube : public Shape

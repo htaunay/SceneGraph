@@ -7,7 +7,7 @@
 #ifndef _NODE_H_
 #define _NODE_H_
 
-#include "glut.h"
+#include <GL/glut.h>
 
 //! Virtual generic class for all objects that represent a node in the SceneGraph.
 class Node

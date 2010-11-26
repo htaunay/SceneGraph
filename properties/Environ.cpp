@@ -7,12 +7,9 @@
 #include "Environ.h"
 #include "Utility.h"
 
-#include "gl.h"
-
-
 void Environ::render()
 {
-	glClearColor( 1.0, 1.0, 1.0, 1.0 );
+	glClearColor( _bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3] );
 }
 
 Environ::Environ()
@@ -22,20 +19,29 @@ Environ::Environ()
 	_fogMode  = GL_LINEAR;
 
 	Utility::initVectorf( _fogColor, 4 );
+	Utility::initVectorf( _bgColor,  4 );
 }
 
-void Environ::setFogColor( float r, float g, float b, float a )
+void Environ::setFogColor( float r, float g, float b )
 {
 	_fogColor[0] = r;
 	_fogColor[1] = g;
 	_fogColor[2] = b;
-	_fogColor[3] = a;
+	_fogColor[3] = 1;
 }
 
 void Environ::setFogDistance( float fogStart, float fogEnd )
 {
 	_fogStart = fogStart;
 	_fogEnd   = fogEnd;
+}
+
+void Environ::setBgColor( float r, float g, float b )
+{
+	_bgColor[0] = r;
+	_bgColor[1] = g;
+	_bgColor[2] = b;
+	_bgColor[3] = 1;
 }
 
 void Environ::enableFog()

@@ -7,7 +7,7 @@
 #ifndef _TEXTURE_H
 #define	_TEXTURE_H
 
-#include "gl.h"
+#include <GL/gl.h>
 #include "Appearance.h"
 
 //! Defines the texture appearance property used in Entity's.

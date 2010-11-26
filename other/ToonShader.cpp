@@ -4,7 +4,6 @@
   Teacher: Waldemar Celes
  */
 
-#include "GLee.h"
 #include "ToonShader.h"
 #include "Utility.h"
 
@@ -59,6 +58,7 @@ ToonShader::~ToonShader()
 
 	glDeleteShader( vertex_shader );
 	glDeleteShader( fragment_shader );
+
 	glDeleteProgram( program_object );
 
 	delete _instance;
@@ -78,10 +78,12 @@ void ToonShader::disable(void)
 
 bool ToonShader::init()
 {
+	// creating the program and shaders
 	program_object  = glCreateProgram();
 	vertex_shader   = glCreateShader( GL_VERTEX_SHADER );
 	fragment_shader = glCreateShader( GL_FRAGMENT_SHADER );
 
+	// setting the shdares sources
 	glShaderSource( vertex_shader,	1, &vertex_source,	 NULL );
 	glShaderSource( fragment_shader, 1, &fragment_source, NULL );
 
@@ -96,6 +98,7 @@ bool ToonShader::init()
 	// Link the shaders into a complete GLSL program.
 	glLinkProgram( program_object );
 
+	// exporting variables to GPU
 	float normal[3];
 	GLint normalLoc = glGetAttribLocation( program_object, "normal" );
 	glVertexAttrib3fv( normalLoc, normal );

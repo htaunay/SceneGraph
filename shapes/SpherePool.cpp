@@ -8,31 +8,28 @@
 #include "Utility.h"
 #include "SpherePool.h"
 
-#include "glut.h"
+#include <GL/glut.h>
 #include <math.h>
 #include <time.h>
 #include <cstdlib>
 
-static const int	NUM_SPHERES		= 75;
-static const float	SPHERE_RADIUS	= 0.45;
+static const int	NUM_SPHERES			= 75;
+static const float	SPHERE_RADIUS		= 0.45;
 static const float	DEFAULT_SOLID_LOSS	= 1.5;
 static const float	DEFAULT_SPHERE_LOSS	= 0.1;
-static const float	DEFAULT_GRAVITY	= 0.05;
+static const float	DEFAULT_GRAVITY		= 0.05;
 static const float	MOVEMENT_THREASHOLD = 0.05;
+
+/********************
+  Auxliary Properties
+*********************/
 
 VVector auxPos;
 VVector auxMov;
 GLfloat* auxColor;
 PhysicsSphere *auxSph;
 
-float lastTime         = 0.0;
-float currentTime      = 0.0;
-float diffTime         = 0.0;
-float totalTime        = 0.0;
-float fps			   = 0.0;
-unsigned int numFrames = 0;
-
-float sphereCounter = 0.0;
+float diffTime;
 
 /*******************************************************************************
   Physics Sphere
@@ -46,16 +43,6 @@ PhysicsSphere::PhysicsSphere()
 	_position.Set( 0, 0, 0 );
 
 	srand((unsigned)time(NULL));
-}
-
-void PhysicsSphere::generateRandColor()
-{
-	for( int i = 0; i < 3; i++ )
-	{
-		srand((unsigned)time(NULL)*rand());
-		_color[i] = ( rand() % 256 )/256.0;
-	}
-	_color[3] = 1.0;
 }
 
 void PhysicsSphere::generateRandPosition( float height, float width )
@@ -84,16 +71,26 @@ void PhysicsSphere::generateRandMovement( float height, float width )
 	_movement.y = height/100;
 }
 
-void PhysicsSphere::applyGravity( float gravity )
-{
-	_movement.y -= ( gravity * (diffTime/30.0) );
-}
-
 void PhysicsSphere::applyMovement( VVector movement )
 {
 	_position.x += ( movement.x * (diffTime/30.0) );
 	_position.y += ( movement.y * (diffTime/30.0) );
 	_position.z += ( movement.z * (diffTime/30.0) );
+}
+
+void PhysicsSphere::generateRandColor()
+{
+	for( int i = 0; i < 3; i++ )
+	{
+		srand((unsigned)time(NULL)*rand());
+		_color[i] = ( rand() % 256 )/256.0;
+	}
+	_color[3] = 1.0;
+}
+
+void PhysicsSphere::applyGravity( float gravity )
+{
+	_movement.y -= ( gravity * (diffTime/30.0) );
 }
 
 void PhysicsSphere::applyMovementLoss( float loss )
@@ -103,6 +100,7 @@ void PhysicsSphere::applyMovementLoss( float loss )
 	_movement.y *= nloss;
 	_movement.z *= nloss;
 
+	// trys to fake friction.... poorly...
 	if( Utility::abs( _movement.x ) < MOVEMENT_THREASHOLD )
 		_movement.x = 0.0;
 
@@ -133,12 +131,12 @@ void SpherePool::draw()
 	step();
 }
 
-void SpherePool::step()
+void SpherePool::updateFrameTime()
 {
-	currentTime = glutGet( GLUT_ELAPSED_TIME );
-	diffTime = currentTime - lastTime;
-	lastTime = currentTime;
-	totalTime += diffTime;
+	currentTime	 = glutGet( GLUT_ELAPSED_TIME );
+	diffTime	 = currentTime - lastTime;
+	lastTime	 = currentTime;
+	totalTime	+= diffTime;
 	sphereCounter += diffTime;
 	numFrames++;
 
@@ -149,7 +147,11 @@ void SpherePool::step()
 		numFrames = 0;
 		printf( "FPS: %f\n", fps, diffTime );
 	}
+}
 
+void SpherePool::step()
+{
+	updateFrameTime();
 	updateNumSpheres();
 	updateMovement();
 	updatePoolCollisions();
@@ -171,7 +173,6 @@ void SpherePool::updateNumSpheres()
 		ps->generateRandColor();
 		ps->generateRandPosition( _height, _width );
 		ps->generateRandMovement( _height, _width );
-		//ps->setPosition( 0, _height, 0 );
 
 		_spheres.push_back( ps );
 	}
@@ -184,11 +185,8 @@ void SpherePool::updateMovement()
 		auxSph = _spheres.at(i);
 		auxSph->applyGravity( DEFAULT_GRAVITY );
 
-		auxPos = auxSph->getPosition();
 		auxMov = auxSph->getMovement();
-
 		auxSph->applyMovement( auxMov );
-		//auxSph->setPosition( auxPos );
 	}
 }
 
@@ -293,6 +291,7 @@ void SpherePool::updateSphereCollisions()
 					sphere1->setMovement( dir2 );
 					sphere2->setMovement( dir1 );
 
+					// Applys the relative energy loss between the colliding spheres
 					double loss = DEFAULT_SPHERE_LOSS / (_spheres.size()*_spheres.size());
 					sphere1->applyMovementLoss( loss );
 					sphere2->applyMovementLoss( loss );
@@ -304,6 +303,9 @@ void SpherePool::updateSphereCollisions()
 
 void SpherePool::updateRender()
 {
+	// THIS SHOULD NOT BE HERE
+	// The SpherePool class should not present a shader application internally
+	// It is only here because of practical reasons
 	ToonShader::getInstance()->enable();
 
 	for( int i = 0; i < _spheres.size(); i++ )
@@ -312,6 +314,7 @@ void SpherePool::updateRender()
 		auxPos = auxSph->getPosition();
 		auxColor = auxSph->getColor();
 
+		// dido
 		ToonShader::getInstance()->setColor( auxColor );
 
 		glPushAttrib(GL_LIGHTING_BIT);
@@ -324,5 +327,6 @@ void SpherePool::updateRender()
 		glPopAttrib();
 	}
 
+	// dido
 	ToonShader::getInstance()->disable();
 }

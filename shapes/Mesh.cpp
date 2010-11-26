@@ -4,7 +4,7 @@
   Teacher: Waldemar Celes
  */
 
-#include "gl.h"
+#include <GL/gl.h>
 #include <stdlib.h>
 
 #include "Mesh.h"

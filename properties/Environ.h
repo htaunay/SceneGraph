@@ -7,7 +7,7 @@
 #ifndef _ENVIRON_H_
 #define _ENVIRON_H_
 
-#include "gl.h"
+#include <GL/gl.h>
 #include "Group.h"
 
 /*!
@@ -27,11 +27,14 @@ public:
 	Environ();
 
 	//! Set's the color in which the objects being clipped will gradiently turn into.
-	void setFogColor( float r, float g, float b, float a );
+	void setFogColor( float r, float g, float b );
 
 	//! Set's the begining and end of the fog effect, where at start distance
 	//! the object will be 100% visible, and at the end distance, 100% the fog color.
 	void setFogDistance( float start, float end );
+
+	//! Set's the canvas background color
+	void setBgColor( float r, float g, float b );
 
 	//! Enable's the fog effect in the Envrion.
 	void enableFog();
@@ -44,5 +47,7 @@ protected:
 	float _fogStart;
 	float _fogEnd;
 	GLenum _fogMode;
+
+	float _bgColor[4];
 };
 #endif

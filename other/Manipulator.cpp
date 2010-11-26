@@ -8,7 +8,7 @@
 #include "Manipulator.h"
 #include "Utility.h"
 
-#include "glut.h"
+#include <GL/glut.h>
 
 #include <math.h>
 #include <stdio.h>

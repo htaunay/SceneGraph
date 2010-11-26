@@ -5,7 +5,7 @@
  */
 
 #include "Sphere.h"
-#include "glut.h"
+#include <GL/glut.h>
 
 void Sphere::draw()
 {

@@ -4,6 +4,7 @@
   Teacher: Waldemar Celes
  */
 
+#include "GLee.h"
 #include "Cube.h"
 #include "Mesh.h"
 #include "Group.h"
@@ -49,6 +50,7 @@ void generateScene()
 
 	Environ *environ = new Environ();
 	environ->setFogDistance( 25.0, 50.0 );
+	environ->setBgColor( 1.0, 1.0, 1.0 );
 	scene->addNode( environ );
 	environ->enableFog();
 
@@ -133,7 +135,7 @@ void showScene( int argc, char* argv[] )
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glutSwapBuffers();
 
-	glPolygonMode(GL_FRONT,GL_FILL);
+	glPolygonMode( GL_FRONT_AND_BACK,GL_FILL);
 
 	generateScene();
 	generateTable();
