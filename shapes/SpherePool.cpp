@@ -124,6 +124,15 @@ SpherePool::SpherePool( float width, float height )
 
 	_sideLimit = ( _width/2.0 ) - SPHERE_RADIUS - 0.05;
 	_floorLimit = SPHERE_RADIUS;
+
+
+	sphereCounter = 0;
+	numFrames     = 0;
+
+	currentTime   = 0.0;
+	diffTime      = 0.0;
+	lastTime      = 0.0;
+	totalTime     = 0.0;
 }
 
 void SpherePool::draw()
