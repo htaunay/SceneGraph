@@ -78,6 +78,10 @@ void generateTable()
 
 	//dummy
 	Material *poolMaterial = new Material();
+	poolMaterial->setAmbient(  1.0, 1.0, 1.0, 1.0 );
+	poolMaterial->setDiffuse(  1.0, 1.0, 1.0, 1.0 );
+	poolMaterial->setSpecular( 1.0, 1.0, 1.0, 1.0 );
+	poolMaterial->setShineness( 1.0 );
 
 	Cube *recepientShape = new Cube( 5, 8, 5, 50 );
 	SpherePool *poolShape = new SpherePool( 5, 7 );
@@ -135,7 +139,7 @@ void showScene( int argc, char* argv[] )
 	glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 	glutSwapBuffers();
 
-	glPolygonMode( GL_FRONT_AND_BACK,GL_FILL);
+	glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
 	generateScene();
 	generateTable();

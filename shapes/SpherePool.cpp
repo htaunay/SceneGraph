@@ -13,7 +13,7 @@
 #include <time.h>
 #include <cstdlib>
 
-static const int	NUM_SPHERES			= 75;
+static const int	NUM_SPHERES			= 100;
 static const float	SPHERE_RADIUS		= 0.45;
 static const float	DEFAULT_SOLID_LOSS	= 1.5;
 static const float	DEFAULT_SPHERE_LOSS	= 0.1;
@@ -315,7 +315,7 @@ void SpherePool::updateRender()
 	// THIS SHOULD NOT BE HERE
 	// The SpherePool class should not present a shader application internally
 	// It is only here because of practical reasons
-	ToonShader::getInstance()->enable();
+	//ToonShader::getInstance()->enable();
 
 	for( int i = 0; i < _spheres.size(); i++ )
 	{
@@ -324,7 +324,7 @@ void SpherePool::updateRender()
 		auxColor = auxSph->getColor();
 
 		// dido
-		ToonShader::getInstance()->setColor( auxColor );
+		//ToonShader::getInstance()->setColor( auxColor );
 
 		glPushAttrib(GL_LIGHTING_BIT);
 		glColor3f( auxColor[0], auxColor[1], auxColor[2] );
@@ -337,5 +337,5 @@ void SpherePool::updateRender()
 	}
 
 	// dido
-	ToonShader::getInstance()->disable();
+	//ToonShader::getInstance()->disable();
 }
